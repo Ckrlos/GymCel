@@ -1,4 +1,4 @@
-package cl.lanixerp.proyecto_gym
+package cl.duocuc.gymcel
 
 import org.junit.Test
 

@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "PROYECTO_GYM"
+rootProject.name = "GymCel"
 include(":app")

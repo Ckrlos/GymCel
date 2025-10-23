@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "cl.lanixerp.proyecto_gym"
-    compileSdk = 34
+    namespace = "cl.duocuc.gymcel"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "cl.lanixerp.proyecto_gym"
+        applicationId = "cl.duocuc.gymcel"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
