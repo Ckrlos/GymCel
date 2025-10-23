@@ -7,11 +7,11 @@ import cl.duocuc.gymcel.data.local.entities.SesionEntity
 @Dao
 interface SesionDao {
     @Query("SELECT * FROM sesion")
-    fun getAll(): List<SesionEntity>
+    suspend fun getAll(): List<SesionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(sesion: SesionEntity)
+    suspend fun insert(sesion: SesionEntity)
 
     @Delete
-    fun delete(sesion: SesionEntity)
+    suspend fun delete(sesion: SesionEntity)
 }

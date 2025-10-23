@@ -17,6 +17,6 @@ import androidx.room.*
 data class SesionEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val rutina_id: Int?,
-    val date: String = "",
+    val date: String? = "",
     val notas: String?
 )

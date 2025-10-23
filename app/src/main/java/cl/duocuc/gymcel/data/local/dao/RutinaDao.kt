@@ -11,11 +11,11 @@ import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 @Dao
 interface RutinaDao {
     @Query("SELECT * FROM rutina")
-    fun getAll(): List<RutinaEntity>
+    suspend fun getAll(): List<RutinaEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(rutina: RutinaEntity)
+    suspend fun insert(rutina: RutinaEntity)
 
     @Delete
-    fun delete(rutina: RutinaEntity)
+    suspend fun delete(rutina: RutinaEntity)
 }

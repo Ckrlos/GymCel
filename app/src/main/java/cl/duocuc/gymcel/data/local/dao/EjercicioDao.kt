@@ -10,11 +10,11 @@ import cl.duocuc.gymcel.data.local.entities.EjercicioEntity
 @Dao
 interface EjercicioDao {
     @Query("SELECT * FROM ejercicio")
-    fun getAll(): List<EjercicioEntity>
+    suspend fun getAll(): List<EjercicioEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(ejercicio: EjercicioEntity)
+    suspend fun insert(ejercicio: EjercicioEntity)
 
     @Delete
-    fun delete(ejercicio: EjercicioEntity)
+    suspend fun delete(ejercicio: EjercicioEntity)
 }

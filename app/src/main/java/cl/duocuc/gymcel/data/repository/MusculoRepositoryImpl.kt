@@ -11,12 +11,12 @@ import cl.duocuc.gymcel.domain.repository.MusculoRepository
 class MusculoRepositoryImpl(context: Context) : MusculoRepository{
     private val dao: MusculoDao = Singleton.getDatabase(context).musculoDao()
 
-    override fun obtenerMusculos(): List<Musculo> {
+    override suspend fun obtenerMusculos(): List<Musculo> {
         // 💡 AQUÍ se usa el mapper para pasar de Entity → Domain
         return dao.getAll().map { it.toDomain() }
     }
 
-    override fun guardarMusculo(musculo: Musculo) {
+    override suspend fun guardarMusculo(musculo: Musculo) {
         // 💡 AQUÍ se usa el mapper para pasar de Domain → Entity
         dao.insert(musculo.toEntity())
     }
