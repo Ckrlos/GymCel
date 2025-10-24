@@ -1,6 +1,7 @@
 package cl.duocuc.gymcel.presentation.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -14,7 +15,6 @@ import cl.duocuc.gymcel.presentacion.ui.components.CardItem
 import cl.duocuc.gymcel.presentacion.ui.components.PrimaryButton
 import cl.duocuc.gymcel.presentacion.viewmodel.MusculoViewModel
 
-
 @Composable
 fun HomeScreen(navController: NavController, viewModel: MusculoViewModel) {
     val lista = viewModel.musculos.collectAsState()
@@ -22,18 +22,26 @@ fun HomeScreen(navController: NavController, viewModel: MusculoViewModel) {
     Surface(modifier = Modifier.fillMaxSize()) {
         if (lista.value.isEmpty()) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
+                    .statusBarsPadding(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 Text("Aún no tienes músculos registrados", fontWeight = FontWeight.Medium)
-                Spacer(modifier = Modifier.height(20.dp))
-                PrimaryButton(text = "Añadir", onClick = {
+                Spacer(
+                    modifier = Modifier.height(20.dp)
+                )
+                PrimaryButton(
+                    text = "Añadir", onClick = {
                     navController.navigate("formMusculo")
-                })
+                },
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+
+                )
             }
         } else {
-            Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            Column(modifier = Modifier.fillMaxSize().padding(16.dp)
+                .statusBarsPadding()) {
                 Text("Tus músculos", style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(8.dp))
                 LazyColumn {
@@ -59,7 +67,8 @@ fun HomeScreen(navController: NavController, viewModel: MusculoViewModel) {
                 Spacer(modifier = Modifier.height(16.dp))
                 PrimaryButton(text = "Añadir otro", onClick = {
                     navController.navigate("formMusculo")
-                })
+                }, modifier = Modifier.align(Alignment.CenterHorizontally)
+                    )
             }
         }
     }

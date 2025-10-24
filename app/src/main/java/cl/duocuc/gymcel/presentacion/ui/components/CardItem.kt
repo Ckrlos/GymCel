@@ -2,6 +2,7 @@ package cl.duocuc.gymcel.presentacion.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,6 +20,7 @@ fun CardItem(
 ) {
     Card(
         modifier = modifier
+            .fillMaxSize()
             .padding(vertical = 6.dp, horizontal = 12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
