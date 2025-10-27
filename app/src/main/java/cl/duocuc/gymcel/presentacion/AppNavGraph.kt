@@ -112,7 +112,9 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                 rutinaId = rutinaId
             )
         }
-
+        composable("formMusculo") {
+            MusculoFormScreen(navController, musculoViewModel)
+        }
 
     }
 }
