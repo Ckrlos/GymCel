@@ -17,4 +17,8 @@ interface EjercicioDao {
 
     @Delete
     suspend fun delete(ejercicio: EjercicioEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAndReturnId(ejercicio: EjercicioEntity): Long
+
 }

@@ -2,9 +2,13 @@ package cl.duocuc.gymcel.data.local.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import cl.duocuc.gymcel.data.local.dao.EjercicioDao
+import cl.duocuc.gymcel.data.local.dao.EjercicioMusculoDao
 import cl.duocuc.gymcel.data.local.dao.MusculoDao
+import cl.duocuc.gymcel.data.local.dao.RutinaConEjerciciosDao
 import cl.duocuc.gymcel.data.local.dao.RutinaDao
+import cl.duocuc.gymcel.data.local.dao.RutinaEntryDao
 import cl.duocuc.gymcel.data.local.dao.SesionDao
+import cl.duocuc.gymcel.data.local.dao.SetRutinaDao
 import cl.duocuc.gymcel.data.local.entities.EjercicioEntity
 import cl.duocuc.gymcel.data.local.entities.EjercicioMusculoCrossRef
 import cl.duocuc.gymcel.data.local.entities.MusculoEntity
@@ -25,11 +29,17 @@ import cl.duocuc.gymcel.data.local.entities.SetRutinaEntity
         SesionEntity::class,
         SesionDetalleEntity::class
     ],
-    version = 1
+    version = 3
 )
 abstract class GymDatabase : RoomDatabase() {
     abstract fun musculoDao(): MusculoDao
     abstract fun ejercicioDao(): EjercicioDao
     abstract fun rutinaDao(): RutinaDao
     abstract fun sesionDao(): SesionDao
+    abstract fun rutinaConEjerciciosDao(): RutinaConEjerciciosDao
+    abstract fun rutinaEntryDao(): RutinaEntryDao
+    abstract fun setRutinaDao(): SetRutinaDao
+    abstract fun ejercicioMusculoDao(): EjercicioMusculoDao
+
+
 }

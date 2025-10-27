@@ -22,4 +22,8 @@ class EjercicioRepositoryImpl(context: Context) : EjercicioRepository {
     override suspend fun eliminarEjercicio(ejercicio: Ejercicio) {
         dao.delete(ejercicio.toEntity())
     }
+    override suspend fun guardarEjercicioYObtenerId(ejercicio: Ejercicio): Long {
+        return dao.insertAndReturnId(ejercicio.toEntity())
+    }
+
 }

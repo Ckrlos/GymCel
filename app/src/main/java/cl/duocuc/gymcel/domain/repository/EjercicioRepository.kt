@@ -6,4 +6,5 @@ interface EjercicioRepository {
     suspend fun obtenerEjercicios(): List<Ejercicio>
     suspend fun guardarEjercicio(ejercicio: Ejercicio)
     suspend fun eliminarEjercicio(ejercicio: Ejercicio)
+    suspend fun guardarEjercicioYObtenerId(ejercicio: Ejercicio): Long
 }

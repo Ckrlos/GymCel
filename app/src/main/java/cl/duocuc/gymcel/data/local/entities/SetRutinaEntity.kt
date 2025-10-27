@@ -17,12 +17,12 @@ import androidx.room.*
 data class SetRutinaEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val rutina_entry_id: Int,
-    val code: String?,
-    val reps: Int?,
-    val rep_range_min: Int?,
-    val rep_range_max: Int?,
-    val load: Double?,
-    val load_unit: String = "KG",
-    val rest_time_sec: Int?,
-    val notas: String?
+    val code: Int = 0,
+    val reps: Int,
+    val rep_range_min: Int = 0,
+    val rep_range_max: Int = 0,
+    val load: Double,
+    val load_unit: String,
+    val rest_time_sec: Int,
+    val notas: String? = null
 )

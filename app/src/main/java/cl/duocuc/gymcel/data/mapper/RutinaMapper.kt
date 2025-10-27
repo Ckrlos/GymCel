@@ -6,11 +6,13 @@ import cl.duocuc.gymcel.domain.model.Rutina
 fun RutinaEntity.toDomain(): Rutina = Rutina(
     id = id,
     nombre = name,
-    descripcion = desc
+    descripcion = desc,
+    dia = dia
 )
 
 fun Rutina.toEntity(): RutinaEntity = RutinaEntity(
     id = id,
     name = nombre,
-    desc = descripcion
+    desc = descripcion,
+    dia = dia
 )

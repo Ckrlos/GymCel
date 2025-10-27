@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class RutinaEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val desc: String?
+    val desc: String?,
+    val dia: String? = null
 )

@@ -6,3 +6,6 @@ import cl.duocuc.gymcel.domain.repository.MusculoRepository
 class GuardarMusculoUseCase(private val repo: MusculoRepository) {
     suspend operator fun invoke(musculo: Musculo) = repo.guardarMusculo(musculo)
 }
+class ObtenerMusculosUseCase(private val repo: MusculoRepository) {
+    suspend operator fun invoke(): List<Musculo> = repo.obtenerMusculos()
+}
