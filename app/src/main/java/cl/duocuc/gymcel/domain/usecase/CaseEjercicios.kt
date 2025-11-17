@@ -6,6 +6,7 @@ import cl.duocuc.gymcel.data.local.entities.relations.RutinaConEjercicios
 import cl.duocuc.gymcel.data.repository.RutinaRepositoryImpl
 import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.Musculo
+import cl.duocuc.gymcel.domain.repository.EjercicioRepository
 import cl.duocuc.gymcel.domain.repository.RutinaConEjerciciosRepository
 import cl.duocuc.gymcel.domain.repository.RutinaRepository
 
@@ -53,4 +54,9 @@ class GuardarEjercicioCompletoUseCase(
         )
     }
 }
+
+class ObtenerEjerciciosUseCase(private val repo: EjercicioRepository) {
+    suspend operator fun invoke(): List<Ejercicio> = repo.obtenerEjercicios()
+}
+
 

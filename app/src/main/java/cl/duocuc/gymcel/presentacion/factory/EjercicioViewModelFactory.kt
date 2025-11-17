@@ -2,8 +2,7 @@ package cl.duocuc.gymcel.presentacion.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import cl.duocuc.gymcel.domain.model.Ejercicio
-import cl.duocuc.gymcel.domain.repository.EjercicioRepository
+import cl.duocuc.gymcel.domain.usecase.ObtenerEjerciciosUseCase
 import cl.duocuc.gymcel.presentacion.viewmodel.EjercicioViewModel
 
 class EjercicioViewModelFactory(
@@ -17,7 +16,4 @@ class EjercicioViewModelFactory(
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 
-}
-class ObtenerEjerciciosUseCase(private val repo: EjercicioRepository) {
-    suspend operator fun invoke(): List<Ejercicio> = repo.obtenerEjercicios()
 }

@@ -3,7 +3,7 @@ package cl.duocuc.gymcel.presentacion.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duocuc.gymcel.domain.model.Ejercicio
-import cl.duocuc.gymcel.presentacion.factory.ObtenerEjerciciosUseCase
+import cl.duocuc.gymcel.domain.usecase.ObtenerEjerciciosUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
