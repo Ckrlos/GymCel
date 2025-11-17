@@ -5,8 +5,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,7 +17,7 @@ import cl.duocuc.gymcel.presentacion.factory.*
 import cl.duocuc.gymcel.presentacion.viewmodel.*
 import cl.duocuc.gymcel.presentation.ui.screens.*
 import cl.duocuc.gymcel.presentacion.ui.screens.*
-import cl.duocuc.gymcel.Singleton
+import cl.duocuc.gymcel.SQLite
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -39,7 +37,7 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
     val guardarRutinaUseCase = GuardarRutinaUseCase(rutinaRepo)
     val guardarRutinaYObtenerIdUseCase = GuardarRutinaYObtenerIdUseCase(rutinaRepo)
     val agregarEjercicioARutinaUseCase =
-        AgregarEjercicioARutinaUseCase(Singleton.getDatabase(context).rutinaEntryDao())
+        AgregarEjercicioARutinaUseCase(SQLite.getDatabase(context).rutinaEntryDao())
     val guardarEjercicioCompletoUseCase = GuardarEjercicioCompletoUseCase(rutinaRepo)
 
     val obtenerEjerciciosUseCase = ObtenerEjerciciosUseCase(ejercicioRepo)

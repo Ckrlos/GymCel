@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import cl.duocuc.gymcel.data.local.db.GymDatabase
 
-object Singleton {
+object SQLite {
 
     @Volatile
     private var dbInstance: GymDatabase? = null

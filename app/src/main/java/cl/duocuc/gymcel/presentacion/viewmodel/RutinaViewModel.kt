@@ -3,17 +3,12 @@ package cl.duocuc.gymcel.presentacion.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavController
-import cl.duocuc.gymcel.Singleton
-import cl.duocuc.gymcel.data.local.entities.EjercicioMusculoCrossRef
 import cl.duocuc.gymcel.data.local.entities.RutinaEntryEntity
-import cl.duocuc.gymcel.data.local.entities.SetRutinaEntity
 import cl.duocuc.gymcel.data.repository.EjercicioRepositoryImpl
 import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.Musculo
 import cl.duocuc.gymcel.domain.model.Rutina
 import cl.duocuc.gymcel.domain.usecase.*
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

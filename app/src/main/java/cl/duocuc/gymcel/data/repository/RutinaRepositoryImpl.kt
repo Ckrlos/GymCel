@@ -2,14 +2,12 @@ package cl.duocuc.gymcel.data.repository
 
 import android.content.Context
 import androidx.room.withTransaction
-import cl.duocuc.gymcel.Singleton
+import cl.duocuc.gymcel.SQLite
 import cl.duocuc.gymcel.data.local.dao.EjercicioDao
 import cl.duocuc.gymcel.data.local.dao.EjercicioMusculoDao
-import cl.duocuc.gymcel.data.local.dao.MusculoDao
 import cl.duocuc.gymcel.data.local.dao.RutinaDao
 import cl.duocuc.gymcel.data.local.dao.RutinaEntryDao
 import cl.duocuc.gymcel.data.local.dao.SetRutinaDao
-import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.*
 import cl.duocuc.gymcel.data.mapper.toDomain
 import cl.duocuc.gymcel.data.mapper.toEntity
@@ -22,12 +20,12 @@ class RutinaRepositoryImpl(
     context: Context
 ) : RutinaRepository {
 
-    private val db = Singleton.getDatabase(context)
-    private val rutinaDao: RutinaDao = Singleton.getDatabase(context).rutinaDao()
-    private val ejercicioDao: EjercicioDao = Singleton.getDatabase(context).ejercicioDao()
-    private val rutinaEntryDao: RutinaEntryDao = Singleton.getDatabase(context).rutinaEntryDao()
-    private val setRutinaDao: SetRutinaDao = Singleton.getDatabase(context).setRutinaDao()
-    private val ejercicioMusculoDao: EjercicioMusculoDao = Singleton.getDatabase(context).ejercicioMusculoDao()
+    private val db = SQLite.getDatabase(context)
+    private val rutinaDao: RutinaDao = SQLite.getDatabase(context).rutinaDao()
+    private val ejercicioDao: EjercicioDao = SQLite.getDatabase(context).ejercicioDao()
+    private val rutinaEntryDao: RutinaEntryDao = SQLite.getDatabase(context).rutinaEntryDao()
+    private val setRutinaDao: SetRutinaDao = SQLite.getDatabase(context).setRutinaDao()
+    private val ejercicioMusculoDao: EjercicioMusculoDao = SQLite.getDatabase(context).ejercicioMusculoDao()
 
     override suspend fun obtenerRutinas(): List<Rutina> {
         return rutinaDao.getAll().map { it.toDomain() }
