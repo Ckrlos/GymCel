@@ -70,7 +70,7 @@ fun SemanaScreen(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "Plan Semanal de Entrenamiento",
+                            text = "Plan Semanal de Entrenamiento xdxdxdxdddddd",
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                         )
                     }

@@ -69,11 +69,11 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
 
     NavHost(
         navController = navController,
-        startDestination = "semana"
+        startDestination = "home"
     ) {
 
-        composable("semana") {
-            SemanaScreen(navController = navController, viewModel = semanaViewModel)
+        composable("home") {
+            HomeScreen(navController = navController)
         }
 
         composable(
