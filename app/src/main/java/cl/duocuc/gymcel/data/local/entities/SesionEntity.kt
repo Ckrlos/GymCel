@@ -1,6 +1,11 @@
 package cl.duocuc.gymcel.data.local.entities
 
-import androidx.room.*
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @Entity(
     tableName = "sesion",
@@ -17,6 +22,8 @@ import androidx.room.*
 data class SesionEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val rutina_id: Int?,
-    val date: String? = "",
+    val date: String? = ZonedDateTime
+        .now()
+        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME),
     val notas: String?
 )

@@ -1,4 +1,4 @@
-package cl.duocuc.gymcel.presentation.ui.screens
+package cl.duocuc.gymcel.presentacion.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -9,9 +9,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import cl.duocuc.gymcel.domain.model.Rutina
+import cl.duocuc.gymcel.presentacion.factory.RutinaViewModelFactory
 import cl.duocuc.gymcel.presentacion.ui.components.PrimaryButton
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaViewModel
 
@@ -81,7 +84,7 @@ fun RutinaFormScreen(
 
                 if (showError) {
                     Text(
-                        text = "⚠️ El nombre es obligatorio",
+                        text = "El nombre es obligatorio",
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(top = 6.dp)
@@ -114,3 +117,18 @@ fun RutinaFormScreen(
         }
     }
 }
+/*
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview(showBackground = true, device = "id:pixel_5")
+@Composable
+fun RutinaFormScreenPreview() {
+    // Usamos un tema Material3 para el preview
+    MaterialTheme {
+        RutinaFormScreen(
+            navController = rememberNavController(), // Necesitarás importar esto
+            viewModel =
+            dia = "Lunes"
+        )
+    }
+}
+ */

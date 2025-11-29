@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "cl.duocuc.gymcel"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
@@ -70,6 +70,9 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
+    implementation(libs.retrofit)
 
     // --- Tests ---
     testImplementation(libs.junit)

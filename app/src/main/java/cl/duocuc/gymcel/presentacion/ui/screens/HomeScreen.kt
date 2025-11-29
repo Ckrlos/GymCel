@@ -55,8 +55,9 @@ fun HomeScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Text(
-                "🏋️‍♂️ Dashboard Principal",
+                "️Dashboard Principal",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -64,18 +65,12 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                "Bienvenido a tu app de entrenamiento",
+                "holamundo",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                "Aquí irán tus estadísticas, próximos entrenamientos y progreso",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
     }
 }

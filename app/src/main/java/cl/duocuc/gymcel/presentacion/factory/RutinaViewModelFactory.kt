@@ -10,7 +10,7 @@ import cl.duocuc.gymcel.domain.usecase.GuardarRutinaYObtenerIdUseCase
 import cl.duocuc.gymcel.domain.usecase.ObtenerRutinasUseCase
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaViewModel
 
-class RutinaViewModelFactory(
+class RutinaViewModelFactory (
     private val context: Context,
     private val obtenerRutinasUseCase: ObtenerRutinasUseCase,
     private val guardarRutinaUseCase: GuardarRutinaUseCase,

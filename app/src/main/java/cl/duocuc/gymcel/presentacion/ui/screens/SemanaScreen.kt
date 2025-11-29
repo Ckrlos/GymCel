@@ -25,7 +25,6 @@ import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SemanaScreen(
@@ -234,7 +233,7 @@ fun SemanaScreen(
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
-                                    text = "${entry.ejercicio.ejercicio.name}",
+                                    text = entry.ejercicio.ejercicio.name,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold
                                 )
