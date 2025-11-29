@@ -1,24 +1,38 @@
 package cl.duocuc.gymcel.presentacion
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.NavType
-import cl.duocuc.gymcel.data.repository.*
-import cl.duocuc.gymcel.domain.usecase.*
-import cl.duocuc.gymcel.presentacion.factory.*
-import cl.duocuc.gymcel.presentacion.viewmodel.*
-import cl.duocuc.gymcel.presentation.ui.screens.*
-import cl.duocuc.gymcel.presentacion.ui.screens.*
 import cl.duocuc.gymcel.SQLite
+import cl.duocuc.gymcel.data.repository.EjercicioRepositoryImpl
+import cl.duocuc.gymcel.data.repository.MusculoRepositoryImpl
+import cl.duocuc.gymcel.data.repository.RutinaConEjerciciosRepositoryImpl
+import cl.duocuc.gymcel.data.repository.RutinaRepositoryImpl
+import cl.duocuc.gymcel.domain.usecase.AgregarEjercicioARutinaUseCase
+import cl.duocuc.gymcel.domain.usecase.GuardarEjercicioCompletoUseCase
+import cl.duocuc.gymcel.domain.usecase.GuardarMusculoUseCase
+import cl.duocuc.gymcel.domain.usecase.GuardarRutinaUseCase
+import cl.duocuc.gymcel.domain.usecase.GuardarRutinaYObtenerIdUseCase
+import cl.duocuc.gymcel.domain.usecase.ObtenerEjerciciosUseCase
+import cl.duocuc.gymcel.domain.usecase.ObtenerMusculosUseCase
+import cl.duocuc.gymcel.domain.usecase.ObtenerRutinasConEjerciciosUseCase
+import cl.duocuc.gymcel.domain.usecase.ObtenerRutinasUseCase
+import cl.duocuc.gymcel.presentacion.factory.EjercicioViewModelFactory
+import cl.duocuc.gymcel.presentacion.factory.MusculoViewModelFactory
+import cl.duocuc.gymcel.presentacion.factory.RutinaViewModelFactory
+import cl.duocuc.gymcel.presentacion.factory.SemanaViewModelFactory
+import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.RutinaFormScreen
+import cl.duocuc.gymcel.presentacion.viewmodel.EjercicioViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.MusculoViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.RutinaViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.SemanaViewModel
 
 
 @Composable
@@ -99,6 +113,7 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
             Text("Detalle de rutina $rutinaId (en construcción)")
         }
 
+        /*
         composable(
             route = "formRutinaEjercicios/{rutinaId}",
             arguments = listOf(navArgument("rutinaId") { type = NavType.IntType })
@@ -114,6 +129,7 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
         composable("formMusculo") {
             MusculoFormScreen(navController, musculoViewModel)
         }
+         */
 
     }
 }
