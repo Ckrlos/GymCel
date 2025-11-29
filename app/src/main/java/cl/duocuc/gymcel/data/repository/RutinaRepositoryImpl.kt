@@ -2,7 +2,7 @@ package cl.duocuc.gymcel.data.repository
 
 import android.content.Context
 import androidx.room.withTransaction
-import cl.duocuc.gymcel.SQLite
+import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.data.local.dao.EjercicioDao
 import cl.duocuc.gymcel.data.local.dao.EjercicioMusculoDao
 import cl.duocuc.gymcel.data.local.dao.RutinaDao
@@ -20,12 +20,12 @@ class RutinaRepositoryImpl(
     context: Context
 ) : RutinaRepository {
 
-    private val db = SQLite.getDatabase(context)
-    private val rutinaDao: RutinaDao = SQLite.getDatabase(context).rutinaDao()
-    private val ejercicioDao: EjercicioDao = SQLite.getDatabase(context).ejercicioDao()
-    private val rutinaEntryDao: RutinaEntryDao = SQLite.getDatabase(context).rutinaEntryDao()
-    private val setRutinaDao: SetRutinaDao = SQLite.getDatabase(context).setRutinaDao()
-    private val ejercicioMusculoDao: EjercicioMusculoDao = SQLite.getDatabase(context).ejercicioMusculoDao()
+    private val db = AppConstants.getDatabase(context)
+    private val rutinaDao: RutinaDao = AppConstants.getDatabase(context).rutinaDao()
+    private val ejercicioDao: EjercicioDao = AppConstants.getDatabase(context).ejercicioDao()
+    private val rutinaEntryDao: RutinaEntryDao = AppConstants.getDatabase(context).rutinaEntryDao()
+    private val setRutinaDao: SetRutinaDao = AppConstants.getDatabase(context).setRutinaDao()
+    private val ejercicioMusculoDao: EjercicioMusculoDao = AppConstants.getDatabase(context).ejercicioMusculoDao()
 
     override suspend fun obtenerRutinas(): List<Rutina> {
         return rutinaDao.getAll().map { it.toDomain() }

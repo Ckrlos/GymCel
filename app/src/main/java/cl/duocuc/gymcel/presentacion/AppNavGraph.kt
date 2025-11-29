@@ -9,7 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import cl.duocuc.gymcel.SQLite
+import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.data.repository.EjercicioRepositoryImpl
 import cl.duocuc.gymcel.data.repository.MusculoRepositoryImpl
 import cl.duocuc.gymcel.data.repository.RutinaConEjerciciosRepositoryImpl
@@ -52,7 +52,7 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
     val guardarRutinaUseCase = GuardarRutinaUseCase(rutinaRepo)
     val guardarRutinaYObtenerIdUseCase = GuardarRutinaYObtenerIdUseCase(rutinaRepo)
     val agregarEjercicioARutinaUseCase =
-        AgregarEjercicioARutinaUseCase(SQLite.getDatabase(context).rutinaEntryDao())
+        AgregarEjercicioARutinaUseCase(AppConstants.getDatabase(context).rutinaEntryDao())
     val guardarEjercicioCompletoUseCase = GuardarEjercicioCompletoUseCase(rutinaRepo)
 
     val obtenerEjerciciosUseCase = ObtenerEjerciciosUseCase(ejercicioRepo)

@@ -1,7 +1,7 @@
 package cl.duocuc.gymcel.data.repository
 
 import android.content.Context
-import cl.duocuc.gymcel.SQLite
+import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.data.mapper.toDomain
 import cl.duocuc.gymcel.data.mapper.toEntity
 import cl.duocuc.gymcel.domain.model.Ejercicio
@@ -9,7 +9,7 @@ import cl.duocuc.gymcel.domain.repository.EjercicioRepository
 
 class EjercicioRepositoryImpl(context: Context) : EjercicioRepository {
 
-    private val dao = SQLite.getDatabase(context).ejercicioDao()
+    private val dao = AppConstants.getDatabase(context).ejercicioDao()
 
     override suspend fun obtenerEjercicios(): List<Ejercicio> {
         return dao.getAll().map { it.toDomain() }
