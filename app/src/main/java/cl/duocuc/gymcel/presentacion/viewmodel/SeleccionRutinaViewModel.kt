@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
 
 class SeleccionarRutinaViewModel : ViewModel() {
@@ -29,9 +30,9 @@ class SeleccionarRutinaViewModel : ViewModel() {
         viewModelScope.launch {
             // Usar datos ficticios
             val rutinasFicticias = listOf(
-                Rutina(1, "Pecho + Tríceps", "Fuerza", "Lunes"),
-                Rutina(2, "Espalda + Bíceps", "Fuerza", "Miércoles"),
-                Rutina(3, "Pierna Full", "Potencia", "Viernes")
+                Rutina(1, "Pecho + Tríceps", "Fuerza", DayOfWeek.MONDAY),
+                Rutina(2, "Espalda + Bíceps", "Fuerza", DayOfWeek.WEDNESDAY),
+                Rutina(3, "Pierna Full", "Potencia", DayOfWeek.FRIDAY)
             )
             _rutinas.value = ordenarPorDiaMasCercano(rutinasFicticias)
         }
@@ -51,14 +52,11 @@ class SeleccionarRutinaViewModel : ViewModel() {
     }
 
     private fun ordenarPorDiaMasCercano(rutinas: List<Rutina>): List<Rutina> {
-        val diasOrden = listOf(
-            "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"
-        )
 
         val hoy = LocalDate.now().dayOfWeek.value % 7
 
         return rutinas.sortedBy { rutina ->
-            val index = diasOrden.indexOf(rutina.dia)
+            val index = DayOfWeek.entries.indexOf(rutina.dia)
             val distancia = (index - hoy + 7) % 7
             distancia
         }

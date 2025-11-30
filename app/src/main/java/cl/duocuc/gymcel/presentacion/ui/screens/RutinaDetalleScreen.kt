@@ -78,7 +78,8 @@ data class EjercicioApiTemp(
     val secondaryMuscles: List<String>,
     val instructions: List<String>
 )
-
+//TODO: renombrar a TreinoDetalleScreen o simplemente TreinoScreen.
+//TODO: abstraer cada cosa a componentes para poder crear la screen de 'solo lectura' de forma mas facil
 @Composable
 fun RutinaDetalleScreen(
     navController: NavController,
