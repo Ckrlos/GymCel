@@ -190,19 +190,20 @@ fun RutinaDetalleScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
+                    /*
                     LazyColumn(
                         modifier = Modifier.weight(1f)
                     ) {
                         items(ejercicios) { ejercicio ->
                             EjercicioItem(
                                 ejercicio = ejercicio,
-                                series = seriesEstado[ejercicio.id] ?: emptyList(),
-                                historial = historialFicticio[ejercicio.id],
+                                series = seriesEstado[ejercicio.id] ?:  emptyList(),
                                 unidadGlobal = unidadGlobal,
                                 onShowHistorial = { viewModel.mostrarHistorial(ejercicio.id) },
                                 onUpdateSerie = { serieIndex, reps, carga ->
                                     // Actualizar datos ficticios localmente
                                     val nuevasSeries = seriesEstado.toMutableMap()
+
                                     val seriesEjercicio = nuevasSeries[ejercicio.id]?.toMutableList() ?: mutableListOf()
 
                                     if (serieIndex < seriesEjercicio.size) {
@@ -218,8 +219,11 @@ fun RutinaDetalleScreen(
                             Spacer(modifier = Modifier.height(12.dp))
                         }
                     }
+                     */
                 }
             }
+
+            /*
 
             // Dialog para mostrar historial
             if (historialVisible != null) {
@@ -234,6 +238,8 @@ fun RutinaDetalleScreen(
                     )
                 }
             }
+
+             */
         }
     }
 }
@@ -293,7 +299,6 @@ fun SelectorUnidad(
 fun EjercicioItem(
     ejercicio: Ejercicio,
     series: List<SerieTemp>,
-    historial: HistorialEjercicioTemp?,
     unidadGlobal: String,
     onShowHistorial: () -> Unit,
     onUpdateSerie: (Int, Int, Double) -> Unit
@@ -320,7 +325,7 @@ fun EjercicioItem(
                     )
 
                     // Información específica de la API
-                    ejercicio.equipo?.let { equipo ->
+                    ejercicio.detalle?.equipamiento[0]?.let { equipo ->
                         if (equipo.isNotBlank()) {
                             Text(
                                 text = "Equipo: $equipo",
@@ -330,15 +335,6 @@ fun EjercicioItem(
                         }
                     }
 
-                    ejercicio.tipo?.let { tipo ->
-                        if (tipo.isNotBlank()) {
-                            Text(
-                                text = "Tipo: $tipo",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                            )
-                        }
-                    }
 
                 }
 

@@ -1,23 +1,31 @@
 package cl.duocuc.gymcel.data.local.dao
 
-interface BaseDao<T, ID> {
+abstract class BaseDao<T, ID> {
 
-    suspend fun insert(entity: T): Long
+    open suspend fun insert(entity: T): Long =
+        throw UnsupportedOperationException()
 
-    suspend fun insertAll(entities: List<T>): List<Long>
+    open suspend fun insertAll(entities: List<@JvmSuppressWildcards T>): List<Long> =
+        throw UnsupportedOperationException()
 
-    suspend fun update(entity: T): Int
+    open suspend fun update(entity: T): Int =
+        throw UnsupportedOperationException()
 
-    suspend fun delete(entity: T): Int
+    open suspend fun delete(entity: T): Int =
+        throw UnsupportedOperationException()
 
-    suspend fun getById(id: ID): T?
+    open suspend fun getById(id: ID): T? =
+        throw UnsupportedOperationException()
 
-    suspend fun getAll(): List<T>
+    open suspend fun getAll(): List<@JvmSuppressWildcards T> =
+        throw UnsupportedOperationException()
 
-    suspend fun deleteById(id: ID): Int
+    open suspend fun deleteById(id: ID): Int =
+        throw UnsupportedOperationException()
 
-    suspend fun count(): Int
-
+    open suspend fun count(): Int =
+        throw UnsupportedOperationException()
 }
 
-interface GymcellDao<T> : BaseDao<T, Long>
+
+abstract class GymcellDao<T> : BaseDao<T, Long>()

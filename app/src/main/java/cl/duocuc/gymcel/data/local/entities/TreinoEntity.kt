@@ -1,8 +1,6 @@
 package cl.duocuc.gymcel.data.local.entities
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
 import java.time.Instant
 
 @Entity(
@@ -14,7 +12,8 @@ import java.time.Instant
             childColumns = ["rutina_id"],
             onDelete = ForeignKey.SET_NULL
         )
-    ]
+    ],
+    indices = [Index("rutina_id")]
 )
 data class TreinoEntity (
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

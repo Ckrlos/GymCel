@@ -44,7 +44,7 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
             "rutina_detalle/{rutinaId}",
             arguments = listOf(navArgument("rutinaId") { type = NavType.IntType })
         ) { navBackStackEntry ->
-            val rutinaId = navBackStackEntry.arguments?.getInt("rutinaId")
+            val rutinaId = navBackStackEntry.arguments?.getLong("rutinaId")
             RutinaDetalleScreen(
                 navController = navController,
                 rutinaId = rutinaId

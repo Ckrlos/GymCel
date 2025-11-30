@@ -20,8 +20,8 @@ class RutinaDetalleViewModel : ViewModel() {
     private val _ejercicios = MutableStateFlow<List<Ejercicio>>(emptyList())
     val ejercicios: StateFlow<List<Ejercicio>> = _ejercicios.asStateFlow()
 
-    private val _historialVisible = MutableStateFlow<Int?>(null)
-    val historialVisible: StateFlow<Int?> = _historialVisible.asStateFlow()
+    private val _historialVisible = MutableStateFlow<String?>(null)
+    val historialVisible: StateFlow<String?> = _historialVisible.asStateFlow()
 
     private val _cargando = MutableStateFlow(false)
     val cargando: StateFlow<Boolean> = _cargando.asStateFlow()
@@ -76,9 +76,7 @@ class RutinaDetalleViewModel : ViewModel() {
             )
         }
     }
-
-    //FIXME: ejercicioId es String...
-    fun mostrarHistorial(ejercicioId: Int) {
+    fun mostrarHistorial(ejercicioId: String) {
         _historialVisible.value = ejercicioId
     }
 
