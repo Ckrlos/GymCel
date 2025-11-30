@@ -8,6 +8,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.TimeUnit
 
 object AppConstants {
@@ -30,7 +32,7 @@ object AppConstants {
 
     @Volatile
     private var apiServiceInstance: ExerciseDbApiService? = null
-    private const val EXERCISEDB_BASE_URL = "https://exercisedb-api.vercel.app/api/v1/"
+    private const val EXERCISEDB_BASE_URL = "https://www.exercisedb.dev/api/v1/"
 
     fun getApiService(): ExerciseDbApiService {
         return apiServiceInstance ?: synchronized(this) {
@@ -56,4 +58,8 @@ object AppConstants {
 
         return retrofit.create(ExerciseDbApiService::class.java)
     }
+
+    fun nowToString() : String = ZonedDateTime
+        .now()
+        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
 }

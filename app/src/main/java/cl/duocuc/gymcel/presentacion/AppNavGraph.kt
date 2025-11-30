@@ -10,10 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import cl.duocuc.gymcel.AppConstants
-import cl.duocuc.gymcel.data.repository.EjercicioRepositoryImpl
-import cl.duocuc.gymcel.data.repository.MusculoRepositoryImpl
-import cl.duocuc.gymcel.data.repository.RutinaConEjerciciosRepositoryImpl
-import cl.duocuc.gymcel.data.repository.RutinaRepositoryImpl
 import cl.duocuc.gymcel.domain.usecase.AgregarEjercicioARutinaUseCase
 import cl.duocuc.gymcel.domain.usecase.GuardarEjercicioCompletoUseCase
 import cl.duocuc.gymcel.domain.usecase.GuardarMusculoUseCase
@@ -23,16 +19,10 @@ import cl.duocuc.gymcel.domain.usecase.ObtenerEjerciciosUseCase
 import cl.duocuc.gymcel.domain.usecase.ObtenerMusculosUseCase
 import cl.duocuc.gymcel.domain.usecase.ObtenerRutinasConEjerciciosUseCase
 import cl.duocuc.gymcel.domain.usecase.ObtenerRutinasUseCase
-import cl.duocuc.gymcel.presentacion.factory.EjercicioViewModelFactory
-import cl.duocuc.gymcel.presentacion.factory.MusculoViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.RutinaViewModelFactory
-import cl.duocuc.gymcel.presentacion.factory.SemanaViewModelFactory
 import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.RutinaFormScreen
-import cl.duocuc.gymcel.presentacion.viewmodel.EjercicioViewModel
-import cl.duocuc.gymcel.presentacion.viewmodel.MusculoViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaViewModel
-import cl.duocuc.gymcel.presentacion.viewmodel.SemanaViewModel
 
 
 @Composable

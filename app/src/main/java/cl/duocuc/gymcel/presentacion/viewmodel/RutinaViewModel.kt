@@ -3,10 +3,7 @@ package cl.duocuc.gymcel.presentacion.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.duocuc.gymcel.data.local.entities.RutinaEntryEntity
-import cl.duocuc.gymcel.data.repository.EjercicioRepositoryImpl
-import cl.duocuc.gymcel.domain.model.Ejercicio
-import cl.duocuc.gymcel.domain.model.Musculo
+import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 import cl.duocuc.gymcel.domain.model.Rutina
 import cl.duocuc.gymcel.domain.usecase.*
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +46,7 @@ class RutinaViewModel(
             val ejercicioRepo = EjercicioRepositoryImpl(context)
             val ejercicioId = ejercicioRepo.guardarEjercicioYObtenerId(ejercicio).toInt()
 
-            val entry = RutinaEntryEntity(
+            val entry = ItemRutinaEntity(
                 rutina_id = rutinaId,
                 ejercicio_id = ejercicioId,
                 name = ejercicio.nombre,

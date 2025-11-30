@@ -1,8 +1,6 @@
 package cl.duocuc.gymcel.domain.usecase
 
-import cl.duocuc.gymcel.data.repository.RutinaRepositoryImpl
 import cl.duocuc.gymcel.domain.model.Rutina
-import cl.duocuc.gymcel.domain.repository.RutinaRepository
 
 class ObtenerRutinasUseCase(private val repository: RutinaRepository) {
     suspend operator fun invoke(): List<Rutina> = repository.obtenerRutinas()

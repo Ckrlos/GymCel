@@ -20,7 +20,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import cl.duocuc.gymcel.presentacion.viewmodel.SemanaViewModel
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Locale

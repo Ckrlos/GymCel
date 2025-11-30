@@ -9,16 +9,19 @@ import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 
 
 @Dao
-interface RutinaDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(rutina: RutinaEntity)
+interface RutinaDao : BaseDao<RutinaEntity> {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAndReturnId(rutina: RutinaEntity): Long
+    @Query("SELECT * FROM gmc_rutina WHERE id = :id")
+    suspend fun getById(id: Long): RutinaEntity?
 
-    @Delete
-    suspend fun delete(rutina: RutinaEntity)
-
-    @Query("SELECT * FROM rutina")
+    @Query("SELECT * FROM gmc_rutina")
     suspend fun getAll(): List<RutinaEntity>
+
+    @Query("DELETE FROM gmc_rutina WHERE id = :id")
+    suspend fun deleteById(id: Long): Int
+
+    @Query("SELECT COUNT(*) FROM gmc_rutina")
+    suspend fun count(): Int
+
+
 }

@@ -1,45 +1,37 @@
 package cl.duocuc.gymcel.data.local.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import cl.duocuc.gymcel.data.local.dao.EjercicioDao
-import cl.duocuc.gymcel.data.local.dao.EjercicioMusculoDao
-import cl.duocuc.gymcel.data.local.dao.MusculoDao
-import cl.duocuc.gymcel.data.local.dao.RutinaConEjerciciosDao
+import cl.duocuc.gymcel.data.local.dao.ItemRutinaDao
+import cl.duocuc.gymcel.data.local.dao.ItemTreinoDao
 import cl.duocuc.gymcel.data.local.dao.RutinaDao
-import cl.duocuc.gymcel.data.local.dao.RutinaEntryDao
-import cl.duocuc.gymcel.data.local.dao.SesionDao
-import cl.duocuc.gymcel.data.local.dao.SetRutinaDao
-import cl.duocuc.gymcel.data.local.entities.EjercicioEntity
-import cl.duocuc.gymcel.data.local.entities.EjercicioMusculoCrossRef
-import cl.duocuc.gymcel.data.local.entities.MusculoEntity
+import cl.duocuc.gymcel.data.local.dao.TreinoDao
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
-import cl.duocuc.gymcel.data.local.entities.RutinaEntryEntity
-import cl.duocuc.gymcel.data.local.entities.SesionDetalleEntity
-import cl.duocuc.gymcel.data.local.entities.SesionEntity
-import cl.duocuc.gymcel.data.local.entities.SetRutinaEntity
+import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
+import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
+import cl.duocuc.gymcel.data.local.entities.TreinoEntity
 
 @Database(
     entities = [
-        MusculoEntity::class,
-        EjercicioEntity::class,
-        EjercicioMusculoCrossRef::class,
         RutinaEntity::class,
-        RutinaEntryEntity::class,
-        SetRutinaEntity::class,
-        SesionEntity::class,
-        SesionDetalleEntity::class
+        ItemRutinaEntity::class,
+        TreinoEntity::class,
+        ItemTreinoEntity::class
     ],
     version = 3
 )
 abstract class GymDatabase : RoomDatabase() {
-    abstract fun musculoDao(): MusculoDao
-    abstract fun ejercicioDao(): EjercicioDao
+
+
     abstract fun rutinaDao(): RutinaDao
-    abstract fun sesionDao(): SesionDao
-    abstract fun rutinaConEjerciciosDao(): RutinaConEjerciciosDao
-    abstract fun rutinaEntryDao(): RutinaEntryDao
-    abstract fun setRutinaDao(): SetRutinaDao
-    abstract fun ejercicioMusculoDao(): EjercicioMusculoDao
+
+    abstract fun itemRutinaDao(): ItemRutinaDao
+
+    abstract fun treinoDao() : TreinoDao
+
+    abstract fun itemTreinoDao() : ItemTreinoDao
+
+
+
 
 
 }

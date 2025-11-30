@@ -1,8 +1,10 @@
 package cl.duocuc.gymcel.domain.model
 
+import java.time.DayOfWeek
+
 data class Rutina(
-    val id: Int,
+    val id: Long,
     val nombre: String,
     val descripcion: String?,
-    val dia: String? = null
+    val dia: DayOfWeek? = null
 )

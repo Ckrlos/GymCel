@@ -2,6 +2,7 @@ package cl.duocuc.gymcel.data.api
 
 import cl.duocuc.gymcel.data.api.modelo.ApiResponse
 import cl.duocuc.gymcel.data.api.modelo.Exercise
+import cl.duocuc.gymcel.data.api.modelo.ObjetoNombrado
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -49,11 +50,11 @@ interface ExerciseDbApiService {
     ): Response<ApiResponse<List<Exercise>>>
 
     @GET("bodyparts")
-    suspend fun getBodyParts(): Response<ApiResponse<List<String>>>
+    suspend fun getBodyParts(): Response<ApiResponse<List<ObjetoNombrado>>>
 
     @GET("targets")
-    suspend fun getTargetMuscles(): Response<ApiResponse<List<String>>>
+    suspend fun getTargetMuscles(): Response<ApiResponse<List<ObjetoNombrado>>>
 
     @GET("equipments")
-    suspend fun getEquipments(): Response<ApiResponse<List<String>>>
+    suspend fun getEquipments(): Response<ApiResponse<List<ObjetoNombrado>>>
 }
