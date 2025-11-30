@@ -51,9 +51,9 @@ dependencies {
     implementation(libs.androidx.foundation)
 
     // --- Jetpack Compose BOM ---
-    val composeBom = platform("androidx.compose:compose-bom:2025.01.00")
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(platform("androidx.compose:compose-bom:2025.01.00"))
+    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
+
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
