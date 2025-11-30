@@ -20,7 +20,7 @@ data class ItemRutinaEntity(
     val exercise_externalid: String,
     val order_index: Int = 0,
     val sets_amount: Int?,
-    val variation: String?,
+    val variation: String,
     val set_range_min: Int?,
     val set_range_max: Int?
 )

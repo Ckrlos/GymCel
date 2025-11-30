@@ -6,5 +6,6 @@ data class Rutina(
     val id: Long,
     val nombre: String,
     val descripcion: String?,
-    val dia: DayOfWeek? = null
+    val dia: DayOfWeek? = null,
+    val detalleRutina: DetalleRutina? = null
 )

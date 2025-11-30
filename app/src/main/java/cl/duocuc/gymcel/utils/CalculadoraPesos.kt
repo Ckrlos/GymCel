@@ -1,4 +1,6 @@
 package cl.duocuc.gymcel.utils
+
+@Deprecated("usar dataclass Peso y enum UnidadPeso")
 object CalculadoraPesos {
 
     // Factor de conversión kg a lb
