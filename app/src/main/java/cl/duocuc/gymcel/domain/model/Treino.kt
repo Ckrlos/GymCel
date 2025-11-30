@@ -7,5 +7,6 @@ data class Treino(
     val rutina: Rutina? = null,
     val timestamp: Instant,
     val done: Boolean = false,
-    val notas: String? = null
+    val notas: String? = null,
+    val detalleTreino: List<DetalleEjercicio>? = null //1:N
 )

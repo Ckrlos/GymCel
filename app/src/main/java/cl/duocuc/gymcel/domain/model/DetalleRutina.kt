@@ -7,8 +7,7 @@ data class DetalleRutina(
     val series: Int,
     val objetivoReps: Int?,
     val tipoSerie: TipoSerie? = TipoSerie.STRAIGHT,
-    val rangoReps: IntRange?,
-    val detalleTreino: DetalleTreino? = null
+    val rangoReps: IntRange?
 ) {
     fun isRange(): Boolean = rangoReps != null && rangoReps.first < rangoReps.last
 }
