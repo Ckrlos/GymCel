@@ -9,4 +9,6 @@ data class Treino(
     val done: Boolean = false,
     val notas: String? = null,
     val detalleTreino: List<DetalleEjercicio>? = null //1:N
-)
+) {
+    fun canWrite() = !done
+}
