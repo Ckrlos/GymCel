@@ -9,6 +9,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
+import java.util.UUID
 
 class RutinaDetalleViewModel : ViewModel() {
 
@@ -24,7 +26,7 @@ class RutinaDetalleViewModel : ViewModel() {
     private val _cargando = MutableStateFlow(false)
     val cargando: StateFlow<Boolean> = _cargando.asStateFlow()
 
-    fun cargarRutina(rutinaId: Int) {
+    fun cargarRutina(rutinaId: Long) {
         _cargando.value = true
         viewModelScope.launch {
             try {
@@ -48,32 +50,34 @@ class RutinaDetalleViewModel : ViewModel() {
         }
     }
 
-    private fun crearRutinaFicticia(rutinaId: Int): Rutina {
+    private fun crearRutinaFicticia(rutinaId: Long): Rutina {
         return when (rutinaId) {
-            1 -> Rutina(1, "Pecho + Tríceps", "Rutina de fuerza para pecho y tríceps", "Lunes")
-            2 -> Rutina(2, "Espalda + Bíceps", "Rutina de fuerza para espalda y bíceps", "Miércoles")
-            3 -> Rutina(3, "Pierna Full", "Rutina completa para piernas", "Viernes")
-            else -> Rutina(rutinaId, "Rutina Personalizada", "Rutina personalizada", "Personalizado")
+            1L -> Rutina(1, "Pecho + Tríceps", "Rutina de fuerza para pecho y tríceps", DayOfWeek.MONDAY)
+            2L -> Rutina(2, "Espalda + Bíceps", "Rutina de fuerza para espalda y bíceps", DayOfWeek.WEDNESDAY)
+            3L -> Rutina(3, "Pierna Full", "Rutina completa para piernas", DayOfWeek.FRIDAY)
+            else -> Rutina(rutinaId, "Rutina Personalizada", "Rutina personalizada", null)
         }
     }
 
-    private fun crearEjerciciosFicticios(rutinaId: Int): List<Ejercicio> {
+    private fun crearEjerciciosFicticios(rutinaId: Long): List<Ejercicio> {
+        val id: String = UUID.randomUUID().toString()
         return when (rutinaId) {
-            1 -> listOf(
-                Ejercicio(1, "Press Banca", "Ejercicio para pectorales", null, "Fuerza", "Barra", 3),
-                Ejercicio(2, "Fondos en Paralelas", "Ejercicio para tríceps y pectoral inferior", null, "Fuerza", "Paralelas", 2),
-                Ejercicio(3, "Extensiones de Tríceps", "Aislamiento de tríceps", null, "Aislamiento", "Polea", 1)
+            1L -> listOf(
+                Ejercicio(id, "Press Banca"),
+                Ejercicio(id, "Fondos en Paralelas"),
+                Ejercicio(id, "Extensiones de Tríceps")
             )
-            2 -> listOf(
-                Ejercicio(4, "Dominadas", "Ejercicio para espalda", null, "Fuerza", "Barra fija", 4),
-                Ejercicio(5, "Curl de Bíceps", "Aislamiento de bíceps", null, "Aislamiento", "Mancuernas", 1)
+            2L -> listOf(
+                Ejercicio(id, "Dominadas"),
+                Ejercicio(id, "Curl de Bíceps")
             )
             else -> listOf(
-                Ejercicio(6, "Sentadillas", "Ejercicio para piernas", null, "Fuerza", "Barra", 3)
+                Ejercicio(id, "Sentadillas")
             )
         }
     }
 
+    //FIXME: ejercicioId es String...
     fun mostrarHistorial(ejercicioId: Int) {
         _historialVisible.value = ejercicioId
     }

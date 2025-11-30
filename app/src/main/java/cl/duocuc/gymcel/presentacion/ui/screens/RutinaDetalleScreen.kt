@@ -83,7 +83,7 @@ data class EjercicioApiTemp(
 @Composable
 fun RutinaDetalleScreen(
     navController: NavController,
-    rutinaId: Int?,
+    rutinaId: Long?,
     viewModel: RutinaDetalleViewModel = viewModel()
 ) {
     val rutina by viewModel.rutina.collectAsState()
