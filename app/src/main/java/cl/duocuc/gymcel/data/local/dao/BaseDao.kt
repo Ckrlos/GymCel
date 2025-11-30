@@ -5,7 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 
-interface BaseDao<T> {
+interface BaseDao<T, ID> {
 
     @Insert
     suspend fun insert(entity: T): Long
@@ -19,4 +19,14 @@ interface BaseDao<T> {
     @Delete
     suspend fun delete(entity: T): Int
 
+    suspend fun getById(id: ID): T?
+
+    suspend fun getAll(): List<T>
+
+    suspend fun deleteById(id: ID): Int
+
+    suspend fun count(): Int
+
 }
+
+interface GymcellDao<T> : BaseDao<T, Long>

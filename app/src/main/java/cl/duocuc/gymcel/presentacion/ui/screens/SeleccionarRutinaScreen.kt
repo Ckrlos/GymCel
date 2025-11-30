@@ -31,7 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import cl.duocuc.gymcel.presentacion.ui.components.BottomNavBar
 import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
-import cl.duocuc.gymcel.presentacion.ui.viewmodels.SeleccionarRutinaViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.SeleccionarRutinaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

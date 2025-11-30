@@ -9,19 +9,19 @@ import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 
 
 @Dao
-interface RutinaDao : BaseDao<RutinaEntity> {
+interface RutinaDao : GymcellDao<RutinaEntity> {
 
     @Query("SELECT * FROM gmc_rutina WHERE id = :id")
-    suspend fun getById(id: Long): RutinaEntity?
+    override suspend fun getById(id: Long): RutinaEntity?
 
     @Query("SELECT * FROM gmc_rutina")
-    suspend fun getAll(): List<RutinaEntity>
+    override suspend fun getAll(): List<RutinaEntity>
 
     @Query("DELETE FROM gmc_rutina WHERE id = :id")
-    suspend fun deleteById(id: Long): Int
+    override suspend fun deleteById(id: Long): Int
 
     @Query("SELECT COUNT(*) FROM gmc_rutina")
-    suspend fun count(): Int
+    override suspend fun count(): Int
 
 
 }

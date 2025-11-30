@@ -1,5 +1,5 @@
 // presentacion/ui/viewmodels/SeleccionarRutinaViewModel.kt
-package cl.duocuc.gymcel.presentacion.ui.viewmodels
+package cl.duocuc.gymcel.presentacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

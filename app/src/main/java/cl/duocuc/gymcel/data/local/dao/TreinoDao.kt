@@ -5,17 +5,17 @@ import androidx.room.Query
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
 
 @Dao
-interface TreinoDao : BaseDao<TreinoEntity> {
+interface TreinoDao : GymcellDao<TreinoEntity> {
 
     @Query("SELECT * FROM gmc_treino WHERE id = :id")
-    suspend fun getById(id: Long): TreinoEntity?
+    override suspend fun getById(id: Long): TreinoEntity?
 
     @Query("SELECT * FROM gmc_treino")
-    suspend fun getAll(): List<TreinoEntity>
+    override suspend fun getAll(): List<TreinoEntity>
 
     @Query("DELETE FROM gmc_treino WHERE id = :id")
-    suspend fun deleteById(id: Long): Int
+    override suspend fun deleteById(id: Long): Int
 
     @Query("SELECT COUNT(*) FROM gmc_treino")
-    suspend fun count(): Int
+    override suspend fun count(): Int
 }

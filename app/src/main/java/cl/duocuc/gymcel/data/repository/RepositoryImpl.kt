@@ -1,9 +1,10 @@
 package cl.duocuc.gymcel.data.repository
 
 import cl.duocuc.gymcel.data.local.dao.BaseDao
+import cl.duocuc.gymcel.data.local.dao.GymcellDao
 import cl.duocuc.gymcel.domain.data.Repository
 
-abstract class BaseRepository<T, ID, DAO : BaseDao<T>> (
+open class BaseRepository<T, ID, DAO : BaseDao<T, ID>> (
     protected val dao: DAO
 ): Repository<T, ID> {
 
@@ -22,8 +23,17 @@ abstract class BaseRepository<T, ID, DAO : BaseDao<T>> (
     override suspend fun delete(entity: T) {
         dao.delete(entity)
     }
+
+    override suspend fun getById(id: ID): T? = dao.getById(id)
+
+    override suspend fun getAll(): List<T> = dao.getAll()
+
+    override suspend fun deleteById(id: ID) {
+        dao.deleteById(id)
+    }
 }
 
-abstract class GymCellRepository<T, DAO : BaseDao<T>>(
+class GymCellRepository<T, DAO : GymcellDao<T>>(
     dao: DAO
 ) : BaseRepository<T, Long, DAO>(dao)
+

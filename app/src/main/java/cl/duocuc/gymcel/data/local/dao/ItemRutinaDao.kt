@@ -5,18 +5,18 @@ import androidx.room.Query
 import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 
 @Dao
-interface ItemRutinaDao : BaseDao<ItemRutinaEntity> {
+interface ItemRutinaDao : GymcellDao<ItemRutinaEntity> {
 
     @Query("SELECT * FROM gmc_itemrutina WHERE id = :id")
-    suspend fun getById(id: Long): ItemRutinaEntity?
+    override suspend fun getById(id: Long): ItemRutinaEntity?
 
     @Query("SELECT * FROM gmc_itemrutina")
-    suspend fun getAll(): List<ItemRutinaEntity>
+    override suspend fun getAll(): List<ItemRutinaEntity>
 
     @Query("DELETE FROM gmc_itemrutina WHERE id = :id")
-    suspend fun deleteById(id: Long): Int
+    override suspend fun deleteById(id: Long): Int
 
     @Query("SELECT COUNT(*) FROM gmc_itemrutina")
-    suspend fun count(): Int
+    override suspend fun count(): Int
     
 }

@@ -20,5 +20,6 @@ data class TreinoEntity (
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val rutina_id: Long,
     val timestamp: Long = Instant.now().epochSecond,
+    val done: Boolean,
     val notas: String
 )
