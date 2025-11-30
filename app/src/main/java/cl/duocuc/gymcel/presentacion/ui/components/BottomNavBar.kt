@@ -39,13 +39,8 @@ private object NavItems {
             icon = Icons.Default.FitnessCenter
         ),
         BottomNavItem(
-            title = "Progreso",
-            route = "progreso",
-            icon = Icons.Default.BarChart
-        ),
-        BottomNavItem(
-            title = "Perfil",
-            route = "perfil",
+            title = "Crea tu rutina",
+            route = "seleccionarRutina",
             icon = Icons.Default.Person
         )
     )
