@@ -1,10 +1,10 @@
 package cl.duocuc.gymcel.domain.model
 
-import java.time.Duration
+import kotlin.time.Duration
 
 data class DetalleTreino(
     val id: Long,
-    val indice: Int,
+    val ejercicio: Ejercicio?,
     val repeticionesEfectivas: Int,
     val cargaEfectiva: Peso,
     val rir: Int?,

@@ -18,7 +18,7 @@ import java.time.Instant
 data class TreinoEntity (
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val rutina_id: Long,
-    val timestamp: Long = Instant.now().epochSecond,
+    val timestamp: Long = Instant.now().toEpochMilli(),
     val done: Boolean = false,
     val notas: String?
 )

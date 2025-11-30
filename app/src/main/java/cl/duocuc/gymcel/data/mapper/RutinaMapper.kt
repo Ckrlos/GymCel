@@ -1,7 +1,11 @@
 package cl.duocuc.gymcel.data.mapper
 
+import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
+import cl.duocuc.gymcel.domain.model.DetalleRutina
+import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.Rutina
+import cl.duocuc.gymcel.domain.model.TipoSerie
 import java.time.DayOfWeek
 
 fun RutinaEntity.toDomain(): Rutina = Rutina(
@@ -16,4 +20,38 @@ fun Rutina.toEntity(): RutinaEntity = RutinaEntity(
     name = nombre,
     desc = descripcion,
     dia = dia?.name
+)
+fun ItemRutinaEntity.toDomain(): DetalleRutina = toDomain { null }
+
+fun ItemRutinaEntity.toDomain(ejercicioMapper: (String) -> Ejercicio?): DetalleRutina {
+    val rango = if (reps_range_min != null && reps_range_max != null) {
+        reps_range_min..reps_range_max
+    } else {
+        null
+    }
+
+    val tipo = runCatching { TipoSerie.valueOf(variation) }
+        .getOrElse { TipoSerie.STRAIGHT } // fallback seguro
+
+    return DetalleRutina(
+        id = id,
+        ejercicio = ejercicioMapper(exercise_externalid),
+        orden = order_index,
+        series = sets_amount,
+        objetivoReps = reps_goal,
+        rangoReps = rango,
+        tipoSerie = tipo
+    )
+}
+
+fun DetalleRutina.toEntity(rutinaId: Long): ItemRutinaEntity = ItemRutinaEntity(
+    id = id,
+    rutina_id = rutinaId,
+    exercise_externalid = ejercicio?.id?: "",
+    order_index = orden,
+    sets_amount = series,
+    reps_goal = objetivoReps,
+    reps_range_min = rangoReps?.first,
+    reps_range_max = rangoReps?.last,
+    variation = tipoSerie?.name ?: TipoSerie.STRAIGHT.name
 )

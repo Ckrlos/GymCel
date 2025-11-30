@@ -19,8 +19,9 @@ data class ItemRutinaEntity(
     val rutina_id: Long,
     val exercise_externalid: String,
     val order_index: Int = 0,
-    val sets_amount: Int?,
+    val sets_amount: Int,
+    val reps_goal: Int?,
+    val reps_range_min: Int?,
+    val reps_range_max: Int?,
     val variation: String,
-    val set_range_min: Int?,
-    val set_range_max: Int?
 )

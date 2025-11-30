@@ -16,13 +16,13 @@ import androidx.room.*
 )
 data class ItemTreinoEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val treino_id: Int,
-    val index: Int = 0,
+    val treino_id: Long,
+    val exercise_externalid: String,
     val effective_reps: Int,
     val effective_load: Double,
     val load_unit: String,
     val rir: Int?,
-    val rest_nanos: Long
+    val rest_nanos: Long?
 ){
 
 }
