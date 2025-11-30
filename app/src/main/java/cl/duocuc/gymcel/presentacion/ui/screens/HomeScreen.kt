@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import cl.duocuc.gymcel.presentacion.ui.components.BottomNavBar
+import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,16 +30,7 @@ fun HomeScreen(
     val currentRoute = remember { "home" }
 
     Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        "Mi Gym App",
-                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-            )
-        },
+        topBar = {TopNavBar()},
         bottomBar = {
             BottomNavBar(
                 navController = navController,

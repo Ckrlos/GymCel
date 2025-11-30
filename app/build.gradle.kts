@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.4")
     implementation("androidx.activity:activity-compose:1.9.2")
+    implementation(libs.androidx.foundation)
 
     // --- Jetpack Compose BOM ---
     val composeBom = platform("androidx.compose:compose-bom:2025.01.00")
