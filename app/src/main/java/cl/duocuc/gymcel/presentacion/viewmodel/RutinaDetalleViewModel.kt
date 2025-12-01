@@ -1,9 +1,13 @@
 package cl.duocuc.gymcel.presentacion.ui.viewmodels
 
+import ItemTreinoDataService
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.data.FactoryProvider
 import cl.duocuc.gymcel.data.local.dao.ItemTreinoDao
+import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
@@ -15,7 +19,9 @@ import java.time.DayOfWeek
 import java.time.Instant
 
 class RutinaDetalleViewModel : ViewModel() {
-
+    private val db: GymDatabase by lazy {
+        AppConstants.getInitializedDatabase() // ¡No requiere Context!
+    }
     private val rutinaRepository by lazy {
         FactoryProvider.repositoryFactory().create(RutinaEntity::class.java)
     }
@@ -30,6 +36,15 @@ class RutinaDetalleViewModel : ViewModel() {
 
     private val itemTreinoRepository by lazy {
         FactoryProvider.repositoryFactory().create(ItemTreinoEntity::class.java)
+    }
+    private val itemTreinoDao by lazy {
+        FactoryProvider.daoFactory().create(ItemTreinoEntity::class.java) as ItemTreinoDao
+    }
+    private val itemTreinoService by lazy {
+        ItemTreinoDataService(
+            db = db,
+            dao = itemTreinoDao
+        )
     }
 
     // ---------------- STATES ----------------
@@ -47,8 +62,6 @@ class RutinaDetalleViewModel : ViewModel() {
 
     val popupUltimoTreino = MutableStateFlow<List<Pair<Double, Int>>?>(null)
     val popupEjercicio = MutableStateFlow<String?>(null)
-    val dao = (itemTreinoRepository as? ItemTreinoDao)
-
     private var treinoIdActual: Long? = null
     private val _detallesRutina = MutableStateFlow<List<ItemRutinaEntity>>(emptyList())
     val detallesRutina: StateFlow<List<ItemRutinaEntity>> = _detallesRutina.asStateFlow()
@@ -81,17 +94,20 @@ class RutinaDetalleViewModel : ViewModel() {
 
 
     suspend fun obtenerUltimoTreino(detalle: ItemRutinaEntity): List<Pair<Double, Int>> {
-        val ultimo = dao?.getUltimoPorEjercicio(detalle.exercise_externalid) ?: emptyList()
+        val ultimo = itemTreinoService.getUltimoTreinoPorEjercicio(detalle.exercise_externalid)
         return ultimo.map { it.effective_load to it.effective_reps }
     }
 
 
     fun mostrarUltimoTreino(detalle: ItemRutinaEntity) {
         viewModelScope.launch {
-            popupUltimoTreino.value = obtenerUltimoTreino(detalle)
+            val ultimo = obtenerUltimoTreino(detalle)
+            Log.d("RutinaDetalle", "Datos para el popup: $ultimo") // Log para ver el contenido
+            popupUltimoTreino.value = ultimo
             popupEjercicio.value = detalle.exercise_externalid
         }
     }
+
 
 
 
@@ -252,12 +268,18 @@ class RutinaDetalleViewModel : ViewModel() {
 
 
     private fun construirMeta(detalle: ItemRutinaEntity): String? = when {
+        detalle.reps_goal != null ->
+            "${detalle.reps_goal} reps"  // Si hay un objetivo de reps, lo usamos.
+
         detalle.reps_range_min != null && detalle.reps_range_max != null ->
-            "${detalle.reps_range_min}-${detalle.reps_range_max} reps"
+            "${detalle.reps_range_min}-${detalle.reps_range_max} reps"  // Rango de reps.
+
         detalle.reps_range_max != null ->
-            "${detalle.reps_range_max} reps"
-        else -> null
+            "${detalle.reps_range_max} reps"  // Si solo hay un `reps_range_max`.
+
+        else -> null  // Si no hay ninguno de los valores.
     }
+
 }
 
 
