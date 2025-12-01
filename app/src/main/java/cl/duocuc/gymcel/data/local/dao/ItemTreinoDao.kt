@@ -33,6 +33,7 @@ abstract class ItemTreinoDao : GymcelDao<ItemTreinoEntity>() {
 
     @Query("SELECT COUNT(*) FROM gmc_itemtreino")
     abstract override suspend fun count(): Int
+
     @Query("""
     SELECT * 
     FROM gmc_itemtreino 

@@ -70,7 +70,7 @@ class ExerciseSearchViewModel(
         state = state.copy(isLoading = true, error = null)
 
         try {
-            val response = api.getExercisesByName(query)
+            val response = api.searchExercises(query)
 
             if (response.isSuccessful) {
                 val apiList = response.body()?.data.orEmpty()

@@ -54,7 +54,9 @@ dependencies {
     implementation(platform("androidx.compose:compose-bom:2025.01.00"))
     implementation(libs.androidx.runtime)
     androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
+
     implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation("io.coil-kt:coil-gif:2.6.0")
 
 
 

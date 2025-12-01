@@ -4,7 +4,7 @@ import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 import cl.duocuc.gymcel.domain.data.DataService // Importa tu clase base genérica
 
-// El tipo genérico DAO se fija aquí a ItemTreinoDao
+
 class ItemTreinoDataService(
     db: GymDatabase,
     dao: ItemTreinoDao // El constructor recibe el DAO específico

@@ -8,12 +8,6 @@ open class ApiResponse<T>(
     val data: T
 )
 
-open class ListApiResponse<E>(
-    success: Boolean,
-    metadata: ApiMetaData?,
-    data: List<E>
-) : ApiResponse<List<E>>(success, metadata, data)
-
 data class ApiMetaData(
     val totalExercises: Int,
     val totalPages: Int,

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopNavBar(
-    title: String = "Mi Gym App",
+    title: String = "Gymcel",
     showBackButton: Boolean = false,
     onBackClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier

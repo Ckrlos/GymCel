@@ -13,7 +13,7 @@ import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.presentacion.factory.ApiServiceViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.DatabaseViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.GenericViewModelFactory
-import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseSearchScreen
 import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchViewModel
 import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseDetailScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.WorkoutLogScreen
@@ -32,6 +32,8 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
     val db = AppConstants.getDatabase(context)
     val apiService = AppConstants.getApiService()
     val registry = FactoryProvider.registry(db)
+    val goBack = { navController.popBackStack() }
+
 
     NavHost(
         navController = navController,
@@ -67,21 +69,10 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                     ) { api -> ExerciseSearchViewModel(api) }
                 ),
                 onExerciseSelected = { id -> println("Ejercicio seleccionado: $id")},
-                onOpenDetail = { id -> navController.navigate("exerciseDetail/$id") }
+                onOpenDetail = { id -> navController.navigate("exerciseDetail/$id") },
+                onBackClick = { navController.popBackStack() }
             )
         }
-        composable("rutinasPorDia") {
-            WorkoutLogScreen(
-                navController,
-                viewModel = viewModel(
-                    factory = GenericViewModelFactory(
-                        WorkoutLogViewModel::class.java,
-                        FactoryProvider.repositoryFactory(registry),
-                    ) { param -> WorkoutLogViewModel(param) }
-                    )
-                )
-        }
-
 
         composable("exerciseDetail/{exerciseId}",
             arguments = listOf(navArgument("exerciseId") { type = NavType.StringType })
@@ -94,9 +85,24 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                     ) { api -> ExerciseDetailViewModel(api) }
                 ),
                 exerciseId = exerciseId,
-                onSelect = { id -> println("Ejercicio seleccionado en detalle: $id") }
+                onSelect = { id -> println("Ejercicio seleccionado en detalle: $id") },
+                onBackClick = { navController.popBackStack() }
             )
         }
+
+
+        composable("rutinasPorDia") {
+            WorkoutLogScreen(
+                navController,
+                viewModel = viewModel(
+                    factory = GenericViewModelFactory(
+                        WorkoutLogViewModel::class.java,
+                        FactoryProvider.repositoryFactory(registry),
+                    ) { param -> WorkoutLogViewModel(param) }
+                    )
+                )
+        }
+
 
         // En AppNavGraph.kt - actualizar la ruta
         composable(

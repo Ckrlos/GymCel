@@ -37,6 +37,7 @@ fun DetalleEjercicioCard(
     modifier: Modifier = Modifier
 ) {
     val detalle = ejercicio.detalle
+    val imageLoader = rememberGifLoader()
 
     Column(
         modifier = modifier
@@ -49,6 +50,7 @@ fun DetalleEjercicioCard(
             AsyncImage(
                 model = url.toString(),
                 contentDescription = ejercicio.nombre,
+                imageLoader = imageLoader,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp)

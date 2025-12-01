@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,14 +35,14 @@ private object NavItems {
             icon = Icons.Default.Home
         ),
         BottomNavItem(
-            title = "Historial",
+            title = "Log",
             route = "rutinasPorDia",
-            icon = Icons.Default.Person
+            icon = Icons.Default.Book
         ),
         BottomNavItem(
-            title = "Crea tu rutina",
+            title = "Crear Rutina",
             route = "searchExercise",
-            icon = Icons.Default.Person
+            icon = Icons.Default.FitnessCenter
         )
     )
 }
