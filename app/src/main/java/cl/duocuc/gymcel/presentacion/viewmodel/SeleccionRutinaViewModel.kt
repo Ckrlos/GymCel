@@ -7,12 +7,14 @@ import cl.duocuc.gymcel.data.FactoryProvider
 import cl.duocuc.gymcel.data.local.dao.GymcelDao
 import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
+import cl.duocuc.gymcel.data.local.entities.TreinoEntity
 import cl.duocuc.gymcel.domain.model.Rutina
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
 
 class SeleccionarRutinaViewModel(
@@ -23,7 +25,8 @@ class SeleccionarRutinaViewModel(
 
     private val rutinaRepository = FactoryProvider.repositoryFactory(registry)
         .create(RutinaEntity::class.java)
-
+    private val treinoRepository = FactoryProvider.repositoryFactory(registry)
+        .create(TreinoEntity::class.java)
     private val _rutinas = MutableStateFlow<List<Rutina>>(emptyList())
     val rutinas: StateFlow<List<Rutina>> = _rutinas.asStateFlow()
 
@@ -57,9 +60,44 @@ class SeleccionarRutinaViewModel(
     }
 
 
-    fun seleccionarRutina(rutina: Rutina) {
+    fun seleccionarRutina(rutina: Rutina, onTreinoReady: (treinoId: Long) -> Unit) {
         _rutinaSeleccionada.value = rutina
         cerrarDropdown()
+
+        viewModelScope.launch {
+            // --- 1. Buscar Treino PENDIENTE ---
+            val treinoPendiente = treinoRepository.getAll()
+                .find { it.rutina_id == rutina.id && !it.done }
+
+            val treinoId: Long = if (treinoPendiente != null) {
+                // Caso A: Existe un treino pendiente
+                treinoPendiente.id
+            } else {
+                // Caso B: No hay pendiente, crear uno nuevo
+
+                // 🚀 CORRECCIÓN CLAVE: Usar save() y capturar el ID devuelto
+                val nuevoTreinoId = treinoRepository.save(
+                    TreinoEntity(
+                        // id = 0 es crucial para autoGenerate
+                        id = 0,
+                        rutina_id = rutina.id,
+                        // Usar Instant.now().epochSecond si el timestamp es Long/segundos
+                        timestamp = java.time.Instant.now().epochSecond,
+                        done = false,
+                        notas = null
+                    )
+                )
+                // Verificar si la base de datos devolvió un ID válido
+                if (nuevoTreinoId == 0L) {
+                    // Manejar error o log. Si save devuelve 0L, algo falló en Room/DAO.
+                    return@launch
+                }
+                nuevoTreinoId
+            }
+
+            // --- 3. Navegar con el ID del Treino ---
+            onTreinoReady(treinoId)
+        }
     }
 
     fun abrirDropdown() {

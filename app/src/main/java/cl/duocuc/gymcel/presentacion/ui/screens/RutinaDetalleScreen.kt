@@ -21,7 +21,7 @@ import cl.duocuc.gymcel.presentacion.ui.components.UltimoTreinoDialog
 @Composable
 fun RutinaDetalleScreen(
     navController: NavController,
-    rutinaId: Long,
+    treinoId: Long,
     viewModel: RutinaDetalleViewModel = viewModel()
 ) {
     val rutina by viewModel.rutina.collectAsState()
@@ -32,7 +32,7 @@ fun RutinaDetalleScreen(
     val popupEjercicio by viewModel.popupEjercicio.collectAsState()
     val detallesRutina = viewModel.detallesRutina.collectAsState()
 
-    LaunchedEffect(rutinaId) { viewModel.cargarRutina(rutinaId) }
+    LaunchedEffect(treinoId) { viewModel.cargarTreino(treinoId) }
 
     Scaffold(
         topBar = {

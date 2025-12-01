@@ -35,18 +35,21 @@ abstract class ItemTreinoDao : GymcelDao<ItemTreinoEntity>() {
     abstract override suspend fun count(): Int
 
     @Query("""
-    SELECT * 
-    FROM gmc_itemtreino 
-    WHERE exercise_externalid = :exerciseId 
-    AND treino_id = (
-        SELECT treino_id 
-        FROM gmc_itemtreino 
-        WHERE exercise_externalid = :exerciseId 
-        ORDER BY treino_id DESC 
-        LIMIT 1
-    )
-    ORDER BY id ASC
+    SELECT T1.* FROM gmc_itemtreino AS T1
+    INNER JOIN gmc_treino AS T2 
+        ON T1.treino_id = T2.id
+    WHERE T1.exercise_externalid = :exerciseId
+        AND T1.treino_id = (
+            SELECT T3.id 
+            FROM gmc_treino AS T3 
+            WHERE 
+                T3.done = 1               
+                AND T3.rutina_id = :rutinaId 
+            ORDER BY T3.timestamp DESC 
+            LIMIT 1
+        )
+    ORDER BY T1.id ASC
 """)
-    abstract suspend fun getUltimoPorEjercicio(exerciseId: String): List<ItemTreinoEntity>
+    abstract suspend fun getUltimoPorEjercicio(exerciseId: String, rutinaId: Long): List<ItemTreinoEntity>
 
 }

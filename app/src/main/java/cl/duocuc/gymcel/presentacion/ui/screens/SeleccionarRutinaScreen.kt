@@ -107,9 +107,11 @@ fun SeleccionarRutinaScreen(
                                 )
                             },
                             onClick = {
-                                // Actualizar el ViewModel Y navegar
-                                viewModel.seleccionarRutina(rutina)
-                                navController.navigate("rutina_detalle/${rutina.id}")
+                                // En lugar de navegar directamente, llamamos a la función que maneja la lógica
+                                viewModel.seleccionarRutina(rutina) { treinoId ->
+                                    // 🚀 Navegar usando el ID del TREINO
+                                    navController.navigate("treino_detalle/${treinoId}")
+                                }
                             }
                         )
                     }

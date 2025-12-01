@@ -106,17 +106,21 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
 
         // En AppNavGraph.kt - actualizar la ruta
         composable(
-            "rutina_detalle/{rutinaId}",
-            arguments = listOf(navArgument("rutinaId") { type = NavType.LongType })
+            "treino_detalle/{treinoId}",
+            arguments = listOf(
+                navArgument("treinoId") { type = NavType.LongType }
+            )
         ) { navBackStackEntry ->
-            val rutinaId = navBackStackEntry.arguments?.getLong("rutinaId") ?: 0L // valor por defecto
+            val treinoId = navBackStackEntry.arguments?.getLong("treinoId") ?: 0L
+
             RutinaDetalleScreen(
                 navController = navController,
-                rutinaId = rutinaId,
+                treinoId = treinoId,
                 viewModel = viewModel(
-                    factory = DatabaseViewModelFactory(RutinaDetalleViewModel::class.java,
-                        db)
-                    { db -> RutinaDetalleViewModel(db) }
+                    factory = DatabaseViewModelFactory(
+                        RutinaDetalleViewModel::class.java,
+                        db
+                    ) { db -> RutinaDetalleViewModel(db) }
                 )
             )
         }

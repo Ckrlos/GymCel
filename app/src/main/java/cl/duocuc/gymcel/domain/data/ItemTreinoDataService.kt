@@ -11,10 +11,7 @@ class ItemTreinoDataService(
 ) : DataService<ItemTreinoDao>(db, dao) {
 
     // Aquí expones el método específico, usando el withDao genérico
-    suspend fun getUltimoTreinoPorEjercicio(exerciseId: String): List<ItemTreinoEntity> =
-        withDao {
-            // El bloque 'withDao' sabe que 'this' es ItemTreinoDao
-            // y, por lo tanto, tiene acceso a getUltimoPorEjercicio
-            getUltimoPorEjercicio(exerciseId)
-        }
+    suspend fun getUltimoTreinoPorEjercicio(exerciseId: String, rutinaId: Long): List<ItemTreinoEntity> {
+        return dao.getUltimoPorEjercicio(exerciseId, rutinaId)
+    }
 }

@@ -75,21 +75,20 @@ class RutinaDetalleViewModel(
     val detallesRutina: StateFlow<List<ItemRutinaEntity>> = _detallesRutina.asStateFlow()
 
 
-    // ---------------- PUBLIC API ----------------
-
-    fun cargarRutina(rutinaId: Long) {
+    fun cargarTreino(treinoId: Long) {
         _loading.value = true
 
         viewModelScope.launch {
             try {
-                val rutinaEntity = rutinaRepository.getById(rutinaId) ?: return@launch
+                val treinoActivo = treinoRepository.getById(treinoId) ?: return@launch
+
+                val rutinaEntity = rutinaRepository.getById(treinoActivo.rutina_id) ?: return@launch
                 _rutina.value = rutinaEntity.toDomain()
 
-                val detallesBase = cargarDetallesRutina(rutinaId)
-                val treinoActivo = cargarOCrearTreino(rutinaId)
+                val detallesBase = cargarDetallesRutina(rutinaEntity.id)
                 _detallesRutina.value = detallesBase
 
-                // Editable solo si el treino no está hecho
+                treinoIdActual = treinoId
                 _editable.value = !treinoActivo.done
 
                 _seriesUI.value = cargarSeriesUI(detallesBase, treinoActivo)
@@ -102,7 +101,11 @@ class RutinaDetalleViewModel(
 
 
     suspend fun obtenerUltimoTreino(detalle: ItemRutinaEntity): List<Pair<Double, Int>> {
-        val ultimo = itemTreinoService.getUltimoTreinoPorEjercicio(detalle.exercise_externalid)
+
+        val ultimo = itemTreinoService.getUltimoTreinoPorEjercicio(
+            exerciseId = detalle.exercise_externalid,
+            rutinaId = detalle.rutina_id
+        )
         return ultimo.map { it.effective_load to it.effective_reps }
     }
 
@@ -110,7 +113,7 @@ class RutinaDetalleViewModel(
     fun mostrarUltimoTreino(detalle: ItemRutinaEntity) {
         viewModelScope.launch {
             val ultimo = obtenerUltimoTreino(detalle)
-            Log.d("RutinaDetalle", "Datos para el popup: $ultimo") // Log para ver el contenido
+            Log.d("RutinaDetalle", "Datos para el popup: $ultimo")
             popupUltimoTreino.value = ultimo
             popupEjercicio.value = detalle.exercise_externalid
         }
@@ -131,6 +134,8 @@ class RutinaDetalleViewModel(
         lista[serieIndex] = serie.copy(carga = nuevaCarga)
         copia[detalleId] = lista
         _seriesUI.value = copia
+
+        guardarSerie(detalleId, serieIndex, lista[serieIndex])
     }
 
     fun actualizarReps(detalleId: Long, serieIndex: Int, nuevasReps: Int) {
@@ -141,6 +146,8 @@ class RutinaDetalleViewModel(
         lista[serieIndex] = serie.copy(reps = nuevasReps)
         copia[detalleId] = lista
         _seriesUI.value = copia
+
+        guardarSerie(detalleId, serieIndex, lista[serieIndex])
     }
 
     fun actualizarUnidad(detalleId: Long, serieIndex: Int, nuevaUnidad: UnidadPeso) {
@@ -162,55 +169,81 @@ class RutinaDetalleViewModel(
 
         copia[detalleId] = lista
         _seriesUI.value = copia
+
+        guardarSerie(detalleId, serieIndex, lista[serieIndex])
+    }
+
+
+    private fun guardarSerie(detalleId: Long, serieIndex: Int, serieUI: SerieUI) {
+        val treinoId = treinoIdActual ?: return
+
+        viewModelScope.launch {
+            val detalleEntity = itemRutinaRepository.getById(detalleId) ?: return@launch
+
+            val itemsTreino = itemTreinoRepository.getAll()
+                .filter { it.treino_id == treinoId && it.exercise_externalid == detalleEntity.exercise_externalid }
+                .sortedBy { it.id }
+
+            val itemExistente = itemsTreino.getOrNull(serieIndex)
+
+
+            val entidadAGuardar = ItemTreinoEntity(
+                id = itemExistente?.id ?: 0,
+                treino_id = treinoId,
+                exercise_externalid = detalleEntity.exercise_externalid,
+                effective_reps = serieUI.reps,
+                effective_load = serieUI.carga,
+                load_unit = serieUI.unidad.symbol,
+                rir = null,
+                rest_nanos = 0L
+            )
+
+
+            if (itemExistente != null) {
+
+                itemTreinoRepository.update(entidadAGuardar)
+
+            } else {
+
+                itemTreinoRepository.save(entidadAGuardar)
+            }
+        }
     }
 
     fun guardarTreino() {
         val treinoId = treinoIdActual ?: return
 
         viewModelScope.launch {
-            for ((detalleId, series) in _seriesUI.value) {
-                val detalleEntity = itemRutinaRepository.getById(detalleId) ?: continue
+            // Asegurarse de que el Treino se marca como COMPLETADO
+            val treino = treinoRepository.getById(treinoId) ?: return@launch
 
-                series.forEach { s ->
-                    itemTreinoRepository.save(
-                        ItemTreinoEntity(
-                            id = 0,
-                            treino_id = treinoId,
-                            exercise_externalid = detalleEntity.exercise_externalid,
-                            effective_reps = s.reps,
-                            effective_load = s.carga,
-                            load_unit = s.unidad.symbol,
-                            rir = null,
-                            rest_nanos = 0L
-                        )
-                    )
-                    treinoRepository.update(
-                        TreinoEntity(
-                            id = treinoId,
-                            rutina_id = detalleEntity.rutina_id,
-                            timestamp = Instant.now().epochSecond,
-                            done = true,
-                            notas = null
-                        )
-                    )
-                }
-            }
+            treinoRepository.update(
+                treino.copy(
+                    timestamp = Instant.now().epochSecond,
+                    done = true, // 🚀 Único lugar donde se establece a TRUE
+                    // notas = ... (si se agregan notas a la UI)
+                )
+            )
 
             _editable.value = false
         }
     }
-
 
     // ---------------- INTERNALS ----------------
 
     private suspend fun cargarDetallesRutina(rutinaId: Long) =
         itemRutinaRepository.getAll().filter { it.rutina_id == rutinaId }
 
+
+
     private suspend fun cargarOCrearTreino(rutinaId: Long): TreinoEntity {
-        val existente = treinoRepository.getAll().find { it.rutina_id == rutinaId }
-        if (existente != null) {
-            treinoIdActual = existente.id
-            return existente
+
+        val treinoPendiente = treinoRepository.getAll()
+            .find { it.rutina_id == rutinaId && !it.done }
+
+        if (treinoPendiente != null) {
+            treinoIdActual = treinoPendiente.id
+            return treinoPendiente
         }
 
         val nuevoId = treinoRepository.save(
@@ -232,40 +265,34 @@ class RutinaDetalleViewModel(
         treino: TreinoEntity
     ): Map<Long, List<SerieUI>> {
 
-        val itemsTreino = itemTreinoRepository.getAll()
-            .filter { it.treino_id == treino.id }
+        val itemsTreino = itemTreinoRepository.getAll().filter { it.treino_id == treino.id }
 
         val editableGlobal = !treino.done
         val resultado = mutableMapOf<Long, List<SerieUI>>()
 
         detalles.forEach { detalle ->
 
-            val seriesGuardadas =
-                itemsTreino.filter { it.exercise_externalid == detalle.exercise_externalid }
+            val seriesGuardadas = itemsTreino
+                .filter { it.exercise_externalid == detalle.exercise_externalid }
+                .sortedBy { it.id }
 
-            val listaUI = if (seriesGuardadas.isEmpty()) {
-                List(detalle.sets_amount) { index ->
-                    SerieUI(
-                        numero = index + 1,
-                        carga = 0.0,
-                        reps = 0,
-                        unidad = UnidadPeso.KILOGRAM,
-                        meta = construirMeta(detalle),
-                        editable = editableGlobal
-                    )
-                }
-            } else {
-                seriesGuardadas.mapIndexed { index, it ->
-                    SerieUI(
-                        numero = index + 1,
-                        carga = it.effective_load,
-                        reps = it.effective_reps,
-                        unidad = UnidadPeso.values().find { u -> u.symbol == it.load_unit }
-                            ?: UnidadPeso.KILOGRAM,
-                        meta = construirMeta(detalle),
-                        editable = editableGlobal
-                    )
-                }
+            val listaUI = List(detalle.sets_amount) { index ->
+
+                val itemGuardado = seriesGuardadas.getOrNull(index)
+
+                val cargaInicial = itemGuardado?.effective_load ?: 0.0
+                val repsInicial = itemGuardado?.effective_reps ?: 0
+                val unidadInicial = UnidadPeso.values().find { u -> u.symbol == itemGuardado?.load_unit }
+                    ?: UnidadPeso.KILOGRAM
+
+                SerieUI(
+                    numero = index + 1,
+                    carga = cargaInicial,
+                    reps = repsInicial,
+                    unidad = unidadInicial,
+                    meta = construirMeta(detalle),
+                    editable = editableGlobal
+                )
             }
 
             resultado[detalle.id] = listaUI
@@ -277,15 +304,15 @@ class RutinaDetalleViewModel(
 
     private fun construirMeta(detalle: ItemRutinaEntity): String? = when {
         detalle.reps_goal != null ->
-            "${detalle.reps_goal} reps"  // Si hay un objetivo de reps, lo usamos.
+            "${detalle.reps_goal} reps"
 
         detalle.reps_range_min != null && detalle.reps_range_max != null ->
-            "${detalle.reps_range_min}-${detalle.reps_range_max} reps"  // Rango de reps.
+            "${detalle.reps_range_min}-${detalle.reps_range_max} reps"
 
         detalle.reps_range_max != null ->
-            "${detalle.reps_range_max} reps"  // Si solo hay un `reps_range_max`.
+            "${detalle.reps_range_max} reps"
 
-        else -> null  // Si no hay ninguno de los valores.
+        else -> null
     }
 
 }
