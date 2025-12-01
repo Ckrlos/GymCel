@@ -1,8 +1,12 @@
-// presentacion/ui/viewmodels/SeleccionarRutinaViewModel.kt
 package cl.duocuc.gymcel.presentacion.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cl.duocuc.gymcel.data.FactoryProvider
+import cl.duocuc.gymcel.data.local.dao.GymcelDao
+import cl.duocuc.gymcel.data.local.db.GymDatabase
+import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.domain.model.Rutina
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +15,14 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 
-class SeleccionarRutinaViewModel : ViewModel() {
+class SeleccionarRutinaViewModel(
+    db: GymDatabase
+) : ViewModel() {
+
+    private val rutinaDao: GymcelDao<RutinaEntity> =
+        FactoryProvider.daoFactory(FactoryProvider.registry(db)).create(RutinaEntity::class.java)
+
+    private val rutinaRepository = GymCellRepository(rutinaDao)
 
     private val _rutinas = MutableStateFlow<List<Rutina>>(emptyList())
     val rutinas: StateFlow<List<Rutina>> = _rutinas.asStateFlow()
@@ -28,13 +39,20 @@ class SeleccionarRutinaViewModel : ViewModel() {
 
     private fun cargarRutinas() {
         viewModelScope.launch {
-            // Usar datos ficticios
-            val rutinasFicticias = listOf(
-                Rutina(1, "Pecho + Tríceps", "Fuerza", DayOfWeek.MONDAY),
-                Rutina(2, "Espalda + Bíceps", "Fuerza", DayOfWeek.WEDNESDAY),
-                Rutina(3, "Pierna Full", "Potencia", DayOfWeek.FRIDAY)
-            )
-            _rutinas.value = ordenarPorDiaMasCercano(rutinasFicticias)
+            val entidades: List<RutinaEntity> = rutinaRepository.getAll()
+            val modelos = entidades.mapNotNull { entidad ->
+                // Convertir 'dia' de String? a DayOfWeek
+                val dia = entidad.dia?.toIntOrNull()?.takeIf { it in 1..7 }?.let { DayOfWeek.of(it) }
+
+                Rutina(
+                    id = entidad.id,
+                    nombre = entidad.name,
+                    descripcion = entidad.desc,
+                    dia = dia,
+                    detalleRutina = emptyList()
+                )
+            }
+            _rutinas.value = ordenarPorDiaMasCercano(modelos)
         }
     }
 
@@ -52,13 +70,10 @@ class SeleccionarRutinaViewModel : ViewModel() {
     }
 
     private fun ordenarPorDiaMasCercano(rutinas: List<Rutina>): List<Rutina> {
-
-        val hoy = LocalDate.now().dayOfWeek.value % 7
-
+        val hoy = LocalDate.now().dayOfWeek.value
         return rutinas.sortedBy { rutina ->
-            val index = DayOfWeek.entries.indexOf(rutina.dia)
-            val distancia = (index - hoy + 7) % 7
-            distancia
+            val index = rutina.dia?.value ?: 0
+            (index - hoy + 7) % 7
         }
     }
 }

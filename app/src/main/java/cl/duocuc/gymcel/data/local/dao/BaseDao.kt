@@ -6,10 +6,10 @@ private val EXCEPTION: UnsupportedOperationException =
 /*
 abstract class BaseDao<T, ID> {
 
-    open suspend fun insert(entity: T): Long =
+    open suspend fun insert(entity: T): ID =
         throw EXCEPTION
 
-    open suspend fun insertAll(entities: List<@JvmSuppressWildcards T>): List<Long> =
+    open suspend fun insertAll(entities: List<@JvmSuppressWildcards T>): List<ID> =
         throw EXCEPTION
 
     open suspend fun update(entity: T): Int =
