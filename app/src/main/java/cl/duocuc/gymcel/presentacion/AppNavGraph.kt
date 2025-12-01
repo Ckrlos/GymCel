@@ -10,21 +10,28 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import cl.duocuc.gymcel.AppConstants
-import cl.duocuc.gymcel.presentacion.factory.ExerciseDetailViewModelFactory
-import cl.duocuc.gymcel.presentacion.factory.ExerciseSearchViewModelFactory
-import cl.duocuc.gymcel.presentacion.factory.SeleccionarRutinaViewModelFactory
+import cl.duocuc.gymcel.presentacion.factory.ApiServiceViewModelFactory
+import cl.duocuc.gymcel.presentacion.factory.DatabaseViewModelFactory
+import cl.duocuc.gymcel.presentacion.factory.GenericViewModelFactory
 import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchScreen
+import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchViewModel
 import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseDetailScreen
-import cl.duocuc.gymcel.presentacion.ui.screens.HistorialTreino
+import cl.duocuc.gymcel.presentacion.ui.screens.WorkoutLogScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.RutinaDetalleScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.SeleccionarRutinaScreen
+import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.RutinaDetalleViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.SeleccionarRutinaViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.WorkoutLogViewModel
+import cl.duocuc.gymcel.data.FactoryProvider
 
 
 @Composable
 fun AppNavGraph(navController: NavHostController, context: Context) {
     val db = AppConstants.getDatabase(context)
     val apiService = AppConstants.getApiService()
+    val registry = FactoryProvider.registry(db)
 
     NavHost(
         navController = navController,
@@ -34,8 +41,6 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
         composable("home") {
             HomeScreen(navController = navController)
         }
-
-
 
         composable(
             route = "detalleRutina/{id}",
@@ -47,21 +52,34 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
 
         composable("seleccionarRutina") {
             SeleccionarRutinaScreen(navController, viewModel(
-                factory = SeleccionarRutinaViewModelFactory(db)
+                factory = DatabaseViewModelFactory(
+                    SeleccionarRutinaViewModel::class.java,
+                    db
+                ) { database -> SeleccionarRutinaViewModel(database) }
             ))
         }
 
         composable("searchExercise") {
             ExerciseSearchScreen(
                 viewModel = viewModel(
-                    factory = ExerciseSearchViewModelFactory(apiService)
+                    factory = ApiServiceViewModelFactory(ExerciseSearchViewModel::class.java,
+                        apiService
+                    ) { api -> ExerciseSearchViewModel(api) }
                 ),
                 onExerciseSelected = { id -> println("Ejercicio seleccionado: $id")},
                 onOpenDetail = { id -> navController.navigate("exerciseDetail/$id") }
             )
         }
         composable("rutinasPorDia") {
-            HistorialTreino(navController)
+            WorkoutLogScreen(
+                navController,
+                viewModel = viewModel(
+                    factory = GenericViewModelFactory(
+                        WorkoutLogViewModel::class.java,
+                        FactoryProvider.repositoryFactory(registry),
+                    ) { param -> WorkoutLogViewModel(param) }
+                    )
+                )
         }
 
 
@@ -71,7 +89,9 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
             val exerciseId = backStackEntry.arguments?.getString("exerciseId") ?: ""
             ExerciseDetailScreen(
                 viewModel = viewModel(
-                    factory = ExerciseDetailViewModelFactory(apiService)
+                    factory = ApiServiceViewModelFactory(ExerciseDetailViewModel::class.java,
+                        apiService
+                    ) { api -> ExerciseDetailViewModel(api) }
                 ),
                 exerciseId = exerciseId,
                 onSelect = { id -> println("Ejercicio seleccionado en detalle: $id") }
@@ -86,7 +106,12 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
             val rutinaId = navBackStackEntry.arguments?.getLong("rutinaId") ?: 0L // valor por defecto
             RutinaDetalleScreen(
                 navController = navController,
-                rutinaId = rutinaId
+                rutinaId = rutinaId,
+                viewModel = viewModel(
+                    factory = DatabaseViewModelFactory(RutinaDetalleViewModel::class.java,
+                        db)
+                    { db -> RutinaDetalleViewModel(db) }
+                )
             )
         }
 

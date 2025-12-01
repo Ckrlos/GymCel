@@ -1,10 +1,9 @@
-package cl.duocuc.gymcel.presentacion.ui.viewmodels
+package cl.duocuc.gymcel.presentacion.viewmodel
 
 import ItemTreinoDataService
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.data.FactoryProvider
 import cl.duocuc.gymcel.data.local.dao.ItemTreinoDao
 import cl.duocuc.gymcel.data.local.db.GymDatabase
@@ -12,30 +11,39 @@ import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
+import cl.duocuc.gymcel.domain.data.RepositoryFactory
 import cl.duocuc.gymcel.domain.model.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.Instant
+import kotlin.collections.iterator
 
-class RutinaDetalleViewModel : ViewModel() {
-    private val db: GymDatabase by lazy {
-        AppConstants.getInitializedDatabase() // ¡No requiere Context!
+class RutinaDetalleViewModel(
+    db :GymDatabase
+) : ViewModel() {
+
+    private val registry by lazy {
+        FactoryProvider.registry(db)
     }
+    private val repositoryFactory: RepositoryFactory by lazy {
+        FactoryProvider.repositoryFactory(registry)
+    }
+
     private val rutinaRepository by lazy {
-        FactoryProvider.repositoryFactory().create(RutinaEntity::class.java)
+        repositoryFactory.create(RutinaEntity::class.java)
     }
 
     private val itemRutinaRepository by lazy {
-        FactoryProvider.repositoryFactory().create(ItemRutinaEntity::class.java)
+        repositoryFactory.create(ItemRutinaEntity::class.java)
     }
 
     private val treinoRepository by lazy {
-        FactoryProvider.repositoryFactory().create(TreinoEntity::class.java)
+        repositoryFactory.create(TreinoEntity::class.java)
     }
 
     private val itemTreinoRepository by lazy {
-        FactoryProvider.repositoryFactory().create(ItemTreinoEntity::class.java)
+        repositoryFactory.create(ItemTreinoEntity::class.java)
     }
     private val itemTreinoDao by lazy {
         FactoryProvider.daoFactory().create(ItemTreinoEntity::class.java) as ItemTreinoDao

@@ -2,22 +2,25 @@ package cl.duocuc.gymcel.presentacion.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.duocuc.gymcel.data.FactoryProvider
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
+import cl.duocuc.gymcel.domain.data.RepositoryFactory
 import cl.duocuc.gymcel.domain.model.Rutina
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
-class RutinasPorDiaViewModel : ViewModel() {
+
+class WorkoutLogViewModel(
+    repoFactory: RepositoryFactory
+) : ViewModel() {
 
     private val rutinaRepo by lazy {
-        FactoryProvider.repositoryFactory().create(RutinaEntity::class.java)
+        repoFactory.create(RutinaEntity::class.java)
     }
 
     private val treinoRepo by lazy {
-        FactoryProvider.repositoryFactory().create(TreinoEntity::class.java)
+        repoFactory.create(TreinoEntity::class.java)
     }
 
     private val _rutinas = MutableStateFlow<List<Rutina>>(emptyList())

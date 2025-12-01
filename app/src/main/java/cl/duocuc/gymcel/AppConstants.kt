@@ -29,11 +29,8 @@ object AppConstants {
                 .also { dbInstance = it }
         }
     }
-    fun getInitializedDatabase(): GymDatabase {
-        return dbInstance ?: throw IllegalStateException(
-            "GymDatabase no ha sido inicializada. Llama a getDatabase(context) primero."
-        )
-    }
+
+
     @Volatile
     private var apiServiceInstance: ExerciseDbApiService? = null
     private const val EXERCISEDB_BASE_URL = "https://www.exercisedb.dev/api/v1/"
