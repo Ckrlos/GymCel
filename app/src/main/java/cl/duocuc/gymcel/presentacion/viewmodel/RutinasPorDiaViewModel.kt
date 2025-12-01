@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
-
 class RutinasPorDiaViewModel : ViewModel() {
 
     private val rutinaRepo by lazy {
@@ -35,24 +34,24 @@ class RutinasPorDiaViewModel : ViewModel() {
         viewModelScope.launch {
 
             // -------------------------------
-            // 1) Cargar todos los treinos
+            // 1) Cargar todos los treinos completados (done = true)
             // -------------------------------
-            val treinos = treinoRepo.getAll()
+            val treinos = treinoRepo.getAll().filter { it.done }  // Filtrar solo los treinos completos
 
-            // Agrupar treinos por rutina_id (solo las que existen en historial)
+            // Agrupar los treinos completados por rutina_id
             val mapaTreinos = treinos.groupBy { it.rutina_id }
                 .mapValues { it.value.size }
 
             _treinosPorRutina.value = mapaTreinos
 
-            // Si una rutina NO aparece en treinos → NO SE MUESTRA
+            // Si una rutina NO aparece en treinos completados → NO SE MUESTRA
             val idsRutinasUsadas = mapaTreinos.keys.filter { it != null }.map { it!! }
 
             // -------------------------------
-            // 2) Cargar solo esas rutinas
+            // 2) Cargar solo las rutinas con treinos completados
             // -------------------------------
             val rutinasEntities = rutinaRepo.getAll()
-                .filter { it.id in idsRutinasUsadas }
+                .filter { it.id in idsRutinasUsadas }  // Solo rutinas que tienen treinos completados
 
             val modelos = rutinasEntities.mapNotNull { entidad ->
 

@@ -1,6 +1,8 @@
 package cl.duocuc.gymcel.presentacion.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -16,7 +18,6 @@ import cl.duocuc.gymcel.presentacion.ui.components.RutinaCard
 import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinasPorDiaViewModel
 import java.time.LocalDate
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistorialTreino(
@@ -26,13 +27,26 @@ fun HistorialTreino(
     val rutinas = viewModel.rutinas.collectAsState().value
     val treinos = viewModel.treinosPorRutina.collectAsState().value
 
-
     Scaffold(
         topBar = { TopNavBar() },
-        bottomBar = { BottomNavBar(navController = navController) }
+        bottomBar = { BottomNavBar(navController) },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate("seleccionarRutina")
+                },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Crear Rutina",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.End
     ) { paddingValues ->
-
-        Column(
+    Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
@@ -48,7 +62,6 @@ fun HistorialTreino(
             Spacer(modifier = Modifier.height(16.dp))
 
             rutinas.forEach { rutina ->
-
                 val totalTreinos = treinos[rutina.id] ?: 0
 
                 RutinaCard(

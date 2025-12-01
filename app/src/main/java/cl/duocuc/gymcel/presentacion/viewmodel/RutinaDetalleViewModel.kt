@@ -3,12 +3,12 @@ package cl.duocuc.gymcel.presentacion.ui.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duocuc.gymcel.data.FactoryProvider
+import cl.duocuc.gymcel.data.local.dao.ItemTreinoDao
 import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
 import cl.duocuc.gymcel.domain.model.*
-import cl.duocuc.gymcel.utils.CalculadoraPesos
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
@@ -45,10 +45,17 @@ class RutinaDetalleViewModel : ViewModel() {
     private val _loading = MutableStateFlow(false)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
-    // Identificador del treino actual en uso
+    val popupUltimoTreino = MutableStateFlow<List<Pair<Double, Int>>?>(null)
+    val popupEjercicio = MutableStateFlow<String?>(null)
+    val dao = (itemTreinoRepository as? ItemTreinoDao)
+
     private var treinoIdActual: Long? = null
+    private val _detallesRutina = MutableStateFlow<List<ItemRutinaEntity>>(emptyList())
+    val detallesRutina: StateFlow<List<ItemRutinaEntity>> = _detallesRutina.asStateFlow()
+
 
     // ---------------- PUBLIC API ----------------
+
     fun cargarRutina(rutinaId: Long) {
         _loading.value = true
 
@@ -59,13 +66,12 @@ class RutinaDetalleViewModel : ViewModel() {
 
                 val detallesBase = cargarDetallesRutina(rutinaId)
                 val treinoActivo = cargarOCrearTreino(rutinaId)
+                _detallesRutina.value = detallesBase
 
-                // Editable si aún no se han guardado series para este treino
-                val itemsTreino = itemTreinoRepository.getAll().filter { it.treino_id == treinoActivo.id }
-                _editable.value = itemsTreino.isEmpty()
+                // Editable solo si el treino no está hecho
+                _editable.value = !treinoActivo.done
 
-                val seriesMap = cargarSeriesUI(detallesBase, treinoActivo)
-                _seriesUI.value = seriesMap
+                _seriesUI.value = cargarSeriesUI(detallesBase, treinoActivo)
 
             } finally {
                 _loading.value = false
@@ -74,52 +80,63 @@ class RutinaDetalleViewModel : ViewModel() {
     }
 
 
+    suspend fun obtenerUltimoTreino(detalle: ItemRutinaEntity): List<Pair<Double, Int>> {
+        val ultimo = dao?.getUltimoPorEjercicio(detalle.exercise_externalid) ?: emptyList()
+        return ultimo.map { it.effective_load to it.effective_reps }
+    }
+
+
+    fun mostrarUltimoTreino(detalle: ItemRutinaEntity) {
+        viewModelScope.launch {
+            popupUltimoTreino.value = obtenerUltimoTreino(detalle)
+            popupEjercicio.value = detalle.exercise_externalid
+        }
+    }
+
+
+
+    fun cerrarPopupUltimoTreino() {
+        popupUltimoTreino.value = null
+    }
+
     fun actualizarCarga(detalleId: Long, serieIndex: Int, nuevaCarga: Double) {
         if (!_editable.value) return
-
         val copia = _seriesUI.value.toMutableMap()
-        val series = copia[detalleId]?.toMutableList() ?: return
-
-        val serie = series.getOrNull(serieIndex) ?: return
-        series[serieIndex] = serie.copy(carga = nuevaCarga)
-
-        copia[detalleId] = series
+        val lista = copia[detalleId]?.toMutableList() ?: return
+        val serie = lista[serieIndex]
+        lista[serieIndex] = serie.copy(carga = nuevaCarga)
+        copia[detalleId] = lista
         _seriesUI.value = copia
     }
 
     fun actualizarReps(detalleId: Long, serieIndex: Int, nuevasReps: Int) {
         if (!_editable.value) return
-
         val copia = _seriesUI.value.toMutableMap()
-        val series = copia[detalleId]?.toMutableList() ?: return
-
-        val serie = series.getOrNull(serieIndex) ?: return
-        series[serieIndex] = serie.copy(reps = nuevasReps)
-
-        copia[detalleId] = series
+        val lista = copia[detalleId]?.toMutableList() ?: return
+        val serie = lista[serieIndex]
+        lista[serieIndex] = serie.copy(reps = nuevasReps)
+        copia[detalleId] = lista
         _seriesUI.value = copia
     }
 
-    fun actualizarUnidad(detalleId: Long, serieIndex: Int, nuevaUnidad: String) {
+    fun actualizarUnidad(detalleId: Long, serieIndex: Int, nuevaUnidad: UnidadPeso) {
         if (!_editable.value) return
 
         val copia = _seriesUI.value.toMutableMap()
-        val series = copia[detalleId]?.toMutableList() ?: return
+        val lista = copia[detalleId]?.toMutableList() ?: return
+        val serie = lista[serieIndex]
 
-        val serie = series.getOrNull(serieIndex) ?: return
-
-        val converted = CalculadoraPesos.convertirPeso(
-            serie.carga,
-            serie.unidad,
-            nuevaUnidad
+        val converted = nuevaUnidad.convert(
+            value = serie.carga,
+            sourceUnit = serie.unidad
         )
 
-        series[serieIndex] = serie.copy(
+        lista[serieIndex] = serie.copy(
             unidad = nuevaUnidad,
             carga = converted
         )
 
-        copia[detalleId] = series
+        copia[detalleId] = lista
         _seriesUI.value = copia
     }
 
@@ -127,10 +144,9 @@ class RutinaDetalleViewModel : ViewModel() {
         val treinoId = treinoIdActual ?: return
 
         viewModelScope.launch {
-            val detallesBase = _seriesUI.value
-
-            for ((detalleId, series) in detallesBase) {
+            for ((detalleId, series) in _seriesUI.value) {
                 val detalleEntity = itemRutinaRepository.getById(detalleId) ?: continue
+
                 series.forEach { s ->
                     itemTreinoRepository.save(
                         ItemTreinoEntity(
@@ -139,55 +155,52 @@ class RutinaDetalleViewModel : ViewModel() {
                             exercise_externalid = detalleEntity.exercise_externalid,
                             effective_reps = s.reps,
                             effective_load = s.carga,
-                            load_unit = s.unidad,
+                            load_unit = s.unidad.symbol,
                             rir = null,
                             rest_nanos = 0L
+                        )
+                    )
+                    treinoRepository.update(
+                        TreinoEntity(
+                            id = treinoId,
+                            rutina_id = detalleEntity.rutina_id,
+                            timestamp = Instant.now().epochSecond,
+                            done = true,
+                            notas = null
                         )
                     )
                 }
             }
 
-            // Asociar treino a la rutina
-            val rutinaId = _rutina.value?.id ?: return@launch
-            val treino = treinoRepository.getById(treinoId) ?: return@launch
-
-            treinoRepository.update(
-                treino.copy(rutina_id = rutinaId)
-            )
-
             _editable.value = false
         }
     }
 
+
     // ---------------- INTERNALS ----------------
 
-    private suspend fun cargarDetallesRutina(rutinaId: Long): List<ItemRutinaEntity> {
-        return itemRutinaRepository.getAll().filter { it.rutina_id == rutinaId }
-    }
+    private suspend fun cargarDetallesRutina(rutinaId: Long) =
+        itemRutinaRepository.getAll().filter { it.rutina_id == rutinaId }
+
     private suspend fun cargarOCrearTreino(rutinaId: Long): TreinoEntity {
-        val treinoExistente = treinoRepository.getAll()
-            .find { it.rutina_id == rutinaId }
-
-        return if (treinoExistente != null) {
-            treinoIdActual = treinoExistente.id
-            treinoExistente
-        } else {
-            // Crear treino temporalmente sin FK, editable
-            val nuevoId = treinoRepository.save(
-                TreinoEntity(
-                    id = 0,
-                    rutina_id = rutinaId, // temporal, para permitir creación
-                    timestamp = Instant.now().epochSecond,
-                    done = false,
-                    notas = null
-                )
-            )
-
-            treinoIdActual = nuevoId
-            _editable.value = true
-
-            treinoRepository.getById(nuevoId)!!
+        val existente = treinoRepository.getAll().find { it.rutina_id == rutinaId }
+        if (existente != null) {
+            treinoIdActual = existente.id
+            return existente
         }
+
+        val nuevoId = treinoRepository.save(
+            TreinoEntity(
+                id = 0,
+                rutina_id = rutinaId,
+                timestamp = Instant.now().epochSecond,
+                done = false,
+                notas = null
+            )
+        )
+
+        treinoIdActual = nuevoId
+        return treinoRepository.getById(nuevoId)!!
     }
 
     private suspend fun cargarSeriesUI(
@@ -198,71 +211,68 @@ class RutinaDetalleViewModel : ViewModel() {
         val itemsTreino = itemTreinoRepository.getAll()
             .filter { it.treino_id == treino.id }
 
-        val mapa = mutableMapOf<Long, List<SerieUI>>()
-        val editableGlobal = treino.rutina_id == 0L  // editable si treino aún no está asociado
+        val editableGlobal = !treino.done
+        val resultado = mutableMapOf<Long, List<SerieUI>>()
 
         detalles.forEach { detalle ->
-            val serieTreino = itemsTreino.filter { it.exercise_externalid == detalle.exercise_externalid }
 
-            val listado = if (serieTreino.isEmpty()) {
-                // Crear series vacías, siempre editables
+            val seriesGuardadas =
+                itemsTreino.filter { it.exercise_externalid == detalle.exercise_externalid }
+
+            val listaUI = if (seriesGuardadas.isEmpty()) {
                 List(detalle.sets_amount) { index ->
                     SerieUI(
                         numero = index + 1,
                         carga = 0.0,
                         reps = 0,
-                        unidad = "kg",
+                        unidad = UnidadPeso.KILOGRAM,
                         meta = construirMeta(detalle),
-                        editable = true
+                        editable = editableGlobal
                     )
                 }
             } else {
-                // Crear series basadas en los datos guardados, editable solo si treino es temporal
-                serieTreino.mapIndexed { index, it ->
+                seriesGuardadas.mapIndexed { index, it ->
                     SerieUI(
                         numero = index + 1,
                         carga = it.effective_load,
                         reps = it.effective_reps,
-                        unidad = it.load_unit,
+                        unidad = UnidadPeso.values().find { u -> u.symbol == it.load_unit }
+                            ?: UnidadPeso.KILOGRAM,
                         meta = construirMeta(detalle),
                         editable = editableGlobal
                     )
                 }
             }
 
-            mapa[detalle.id] = listado
+            resultado[detalle.id] = listaUI
         }
 
-        return mapa
+        return resultado
     }
 
 
-    private fun construirMeta(detalle: ItemRutinaEntity): String? {
-        return when {
-            detalle.reps_range_min != null && detalle.reps_range_max != null ->
-                "${detalle.reps_range_min}-${detalle.reps_range_max} reps"
-
-            detalle.reps_range_max != null ->
-                "${detalle.reps_range_max} reps"
-
-            else -> null
-        }
+    private fun construirMeta(detalle: ItemRutinaEntity): String? = when {
+        detalle.reps_range_min != null && detalle.reps_range_max != null ->
+            "${detalle.reps_range_min}-${detalle.reps_range_max} reps"
+        detalle.reps_range_max != null ->
+            "${detalle.reps_range_max} reps"
+        else -> null
     }
 }
 
-// ---------------- DTO UI CLEAN ----------------
 
+// ---------------- DTO UI CLEAN ----------------
 data class SerieUI(
     val numero: Int,
     val carga: Double,
     val reps: Int,
-    val unidad: String,
+    val unidad: UnidadPeso,
     val meta: String?,
     val editable: Boolean
 )
 
-// ---------------- MAPPERS ----------------
 
+// ---------------- MAPPERS ----------------
 private fun RutinaEntity.toDomain(): Rutina = Rutina(
     id = id,
     nombre = name,

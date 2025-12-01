@@ -5,20 +5,31 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import cl.duocuc.gymcel.presentacion.ui.components.BottomNavBar
+import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
 import cl.duocuc.gymcel.presentacion.ui.viewmodels.RutinaDetalleViewModel
 import cl.duocuc.gymcel.presentacion.ui.viewmodels.SerieUI
-import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
-import cl.duocuc.gymcel.presentacion.ui.components.BottomNavBar
+import cl.duocuc.gymcel.domain.model.UnidadPeso
+import cl.duocuc.gymcel.presentacion.ui.components.CenteredText
+import cl.duocuc.gymcel.presentacion.ui.components.ExerciseCard
+import cl.duocuc.gymcel.presentacion.ui.components.UltimoTreinoDialog
 
 @Composable
 fun RutinaDetalleScreen(
@@ -30,6 +41,9 @@ fun RutinaDetalleScreen(
     val loading by viewModel.loading.collectAsState()
     val seriesUI by viewModel.seriesUI.collectAsState()
     val editable by viewModel.editable.collectAsState()
+    val popupData by viewModel.popupUltimoTreino.collectAsState()
+    val popupEjercicio by viewModel.popupEjercicio.collectAsState()
+    val detallesRutina = viewModel.detallesRutina.collectAsState()
 
     LaunchedEffect(rutinaId) { viewModel.cargarRutina(rutinaId) }
 
@@ -44,174 +58,51 @@ fun RutinaDetalleScreen(
         bottomBar = { BottomNavBar(navController) },
         floatingActionButton = {
             if (editable) {
-                FloatingActionButton(onClick = { viewModel.guardarTreino() }) {
-                    Text("Guardar")
-                }
+                ExtendedFloatingActionButton(
+                    onClick = { viewModel.guardarTreino() },
+                    icon = { Icon(Icons.Filled.CheckCircle, contentDescription = null) },
+                    text = { Text("Terminar") },
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             }
         }
     ) { padding ->
+
+        // --- POPUP ULTIMO TREINO ---
+        if (popupData != null && popupEjercicio != null) {
+            UltimoTreinoDialog(
+                ejercicio = popupEjercicio!!,
+                series = popupData!!,
+                onDismiss = { viewModel.cerrarPopupUltimoTreino() }
+            )
+        }
 
         Box(modifier = Modifier.padding(padding)) {
             when {
                 loading -> CenteredText("Cargando...")
                 rutina == null -> CenteredText("Rutina no encontrada")
-                else -> LazyColumn(modifier = Modifier.padding(12.dp)) {
-                    items(seriesUI.entries.toList()) { (detalleId, series) ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                            elevation = CardDefaults.cardElevation(4.dp)
-                        ) {
-                            Column(Modifier.padding(16.dp)) {
-                                Text("Ejercicio #$detalleId", style = MaterialTheme.typography.titleMedium)
-
-                                Spacer(Modifier.height(12.dp))
-
-                                SeriesTable(
-                                    detalleId = detalleId,
-                                    series = series,
-                                    editable = editable,
-                                    onCarga = viewModel::actualizarCarga,
-                                    onReps = viewModel::actualizarReps,
-                                    onUnidad = viewModel::actualizarUnidad
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun SeriesTable(
-    detalleId: Long,
-    series: List<SerieUI>,
-    editable: Boolean,
-    onCarga: (Long, Int, Double) -> Unit,
-    onReps: (Long, Int, Int) -> Unit,
-    onUnidad: (Long, Int, String) -> Unit
-) {
-    Column {
-        series.forEachIndexed { index, serie ->
-
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("${serie.numero}", Modifier.width(40.dp))
-
-                // --- CARGA ---
-                OutlinedTextField(
-                    value = serie.carga.toString(),
-                    onValueChange = {
-                        it.toDoubleOrNull()?.let { v ->
-                            onCarga(detalleId, index, v)
-                        }
-                    },
-                    modifier = Modifier.weight(1f),
-                    enabled = serie.editable && editable,
-                    label = { Text("Carga") }
-                )
-
-                // --- UNIDAD ---
-                UnidadPicker(
-                    selected = serie.unidad,
-                    enabled = serie.editable && editable,
-                    onSelect = { onUnidad(detalleId, index, it) }
-                )
-
-                // --- REPS ---
-                OutlinedTextField(
-                    value = serie.reps.toString(),
-                    onValueChange = {
-                        it.toIntOrNull()?.let { v -> onReps(detalleId, index, v) }
-                    },
-                    modifier = Modifier.weight(1f),
-                    enabled = serie.editable && editable,
-                    label = { Text("Reps") }
-                )
-
-                // --- META (TOOLTIP) ---
-                serie.meta?.let { meta ->
-                    MetaTooltip(meta)
-                }
-            }
-        }
-    }
-}
-
-
-// Tooltip de meta
-@Composable
-private fun MetaTooltip(meta: String) {
-    var show by remember { mutableStateOf(false) }
-
-    Box(Modifier.padding(start = 8.dp)) {
-        Text(
-            "ⓘ",
-            modifier = Modifier.clickable { show = true },
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        if (show) {
-            Popup(onDismissRequest = { show = false }) {
-                Box(
-                    Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(12.dp)
+                else -> LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
-                    Text("Meta: $meta")
+                    items(seriesUI.entries.toList()) { (detalleId, series) ->
+                        val detalle = detallesRutina.value.find { it.id == detalleId } ?: return@items
+                        ExerciseCard(
+                            exerciseName = detalle.exercise_externalid,
+                            series = series,
+                            detalleId = detalleId,
+                            editable = editable,
+                            onShowLastWorkout = { viewModel.mostrarUltimoTreino(detalle) },
+                            onCarga = viewModel::actualizarCarga,
+                            onReps = viewModel::actualizarReps,
+                            onUnidad = viewModel::actualizarUnidad
+                        )
+                    }
                 }
             }
         }
-    }
-}
-
-
-// Picker de unidad
-@Composable
-private fun UnidadPicker(
-    selected: String,
-    enabled: Boolean,
-    onSelect: (String) -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Box(Modifier.padding(horizontal = 8.dp)) {
-
-        Text(
-            text = selected,
-            modifier = Modifier
-                .clip(RoundedCornerShape(6.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .clickable(enabled) { expanded = true }
-                .padding(horizontal = 10.dp, vertical = 8.dp)
-        )
-
-        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-            listOf("kg", "lb").forEach {
-                DropdownMenuItem(
-                    text = { Text(it) },
-                    onClick = {
-                        onSelect(it)
-                        expanded = false
-                    }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun CenteredText(text: String) {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text)
     }
 }
