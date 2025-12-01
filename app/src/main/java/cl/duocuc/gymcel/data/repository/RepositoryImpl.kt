@@ -1,20 +1,11 @@
 package cl.duocuc.gymcel.data.repository
 
-import cl.duocuc.gymcel.data.local.dao.BaseDao
-import cl.duocuc.gymcel.data.local.dao.GymcellDao
+import cl.duocuc.gymcel.data.local.dao.GymcelDao
 import cl.duocuc.gymcel.domain.data.Repository
 
-open class BaseRepository<T, ID, DAO : BaseDao<T, ID>> (
+abstract class BaseRepository<T, ID, DAO :  GymcelDao<T>> (
     protected val dao: DAO
 ): Repository<T, ID> {
-
-    override suspend fun save(entity: T) {
-        dao.insert(entity)
-    }
-
-    override suspend fun saveAll(entity: List<T>) {
-        dao.insertAll(entity)
-    }
 
     override suspend fun update(entity: T) {
         dao.update(entity)
@@ -24,16 +15,24 @@ open class BaseRepository<T, ID, DAO : BaseDao<T, ID>> (
         dao.delete(entity)
     }
 
-    override suspend fun getById(id: ID): T? = dao.getById(id)
-
     override suspend fun getAll(): List<T> = dao.getAll()
 
-    override suspend fun deleteById(id: ID) {
-        dao.deleteById(id)
-    }
 }
 
-class GymCellRepository<T, DAO : GymcellDao<T>>(
+class GymcelRepository<T, DAO : GymcelDao<T>>(
     dao: DAO
-) : BaseRepository<T, Long, DAO>(dao)
+) : BaseRepository<T, Long, DAO>(dao) {
+
+    override suspend fun save(entity: T): Long = dao.insert(entity)
+
+    override suspend fun saveAll(entities: List<T>): List<Long> = dao.insertAll(entities)
+
+    override suspend fun getById(id: Long): T? = dao.getById(id)
+
+
+    override suspend fun deleteById(id: Long) {
+        dao.deleteById(id)
+    }
+
+}
 

@@ -3,9 +3,13 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.data.FactoryProvider
+import cl.duocuc.gymcel.data.local.dao.RutinaDao
 import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
+import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.*
 import org.junit.runner.RunWith
@@ -21,12 +25,7 @@ class DatabaseTest {
 
     @Before
     fun setUp() {
-        db = Room.inMemoryDatabaseBuilder(
-            ApplicationProvider.getApplicationContext(),
-            GymDatabase::class.java
-        )
-            .allowMainThreadQueries()  // SOLO PARA TEST
-            .build()
+        db = AppConstants.getDatabase(ApplicationProvider.getApplicationContext())
     }
 
     @After
@@ -48,17 +47,26 @@ class DatabaseTest {
 
         // Obtener repository y guardar
         val rutinaRepo = FactoryProvider.repositoryFactory(registry)
-            .create(RutinaEntity::class.java);
+            .create(RutinaEntity::class.java)
+        val rutinaDao: RutinaDao = FactoryProvider.daoFactory(registry)
+            .create(RutinaEntity::class.java)
 
-        rutinaRepo.save(rutina)
+        val idGenerado = rutinaRepo.save(rutina)
 
-        // Validación directa vía DAO
-        val repoResult = rutinaRepo.getById(1)
-        val daoResult = db.rutinaDao().getById(1)
+        assertTrue("la instancia de idGenerado no es Long", idGenerado is Long)
+        assertEquals("el id generado no es el esperado", 1L, idGenerado)
 
-        Assert.assertNotNull(repoResult)
-        Assert.assertEquals("Rutina de ejemplo", repoResult?.name)
-        Assert.assertNotNull(daoResult)
-        Assert.assertEquals("Rutina de ejemplo", daoResult?.name)
+
+//         Validación directa vía DAO
+
+        val daoResult = rutinaDao.getById(idGenerado)
+
+
+        Assert.assertNotNull("[TESTING DAO] - el resultado es nulo", daoResult)
+        Assert.assertEquals("[TESTING DAO] - el valor de nombre de rutina no es igual al que insertamos", "Rutina de ejemplo", daoResult?.name)
+
+        val repoResult = rutinaRepo.getById(idGenerado)
+        Assert.assertNotNull("[TESTING REPO] - el resultado es nulo",repoResult)
+        Assert.assertEquals("[TESTING REPO] - el valor de nombre de rutina no es igual al que insertamos", "Rutina de ejemplo", repoResult?.name)
     }
 }

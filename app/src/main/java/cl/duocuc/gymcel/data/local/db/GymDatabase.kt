@@ -17,7 +17,7 @@ import cl.duocuc.gymcel.data.local.entities.TreinoEntity
         TreinoEntity::class,
         ItemTreinoEntity::class
     ],
-    version = 3
+    version = 5
 )
 abstract class GymDatabase : RoomDatabase() {
 

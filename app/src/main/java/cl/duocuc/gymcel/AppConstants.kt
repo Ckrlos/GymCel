@@ -59,7 +59,4 @@ object AppConstants {
         return retrofit.create(ExerciseDbApiService::class.java)
     }
 
-    fun nowToString() : String = ZonedDateTime
-        .now()
-        .format(DateTimeFormatter.ISO_ZONED_DATE_TIME)
 }

@@ -8,7 +8,7 @@ import androidx.room.Update
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 
 @Dao
-abstract class ItemTreinoDao : GymcellDao<ItemTreinoEntity>() {
+abstract class ItemTreinoDao : GymcelDao<ItemTreinoEntity>() {
 
     @Insert
     abstract override suspend fun insert(entity: ItemTreinoEntity): Long

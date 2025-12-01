@@ -3,14 +3,13 @@ package cl.duocuc.gymcel.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 
 
 @Dao
-abstract class RutinaDao : GymcellDao<RutinaEntity>() {
+abstract class RutinaDao : GymcelDao<RutinaEntity>() {
 
     @Insert
     abstract override suspend fun insert(entity: RutinaEntity): Long
