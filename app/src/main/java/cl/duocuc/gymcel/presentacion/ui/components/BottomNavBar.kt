@@ -34,9 +34,9 @@ private object NavItems {
             icon = Icons.Default.Home
         ),
         BottomNavItem(
-            title = "Entrenar",
-            route = "entrenar",
-            icon = Icons.Default.FitnessCenter
+            title = "Historial",
+            route = "rutinasPorDia",
+            icon = Icons.Default.Person
         ),
         BottomNavItem(
             title = "Crea tu rutina",

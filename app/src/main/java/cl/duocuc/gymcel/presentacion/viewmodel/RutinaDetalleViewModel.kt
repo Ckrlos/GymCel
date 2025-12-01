@@ -49,7 +49,6 @@ class RutinaDetalleViewModel : ViewModel() {
     private var treinoIdActual: Long? = null
 
     // ---------------- PUBLIC API ----------------
-
     fun cargarRutina(rutinaId: Long) {
         _loading.value = true
 
@@ -61,9 +60,11 @@ class RutinaDetalleViewModel : ViewModel() {
                 val detallesBase = cargarDetallesRutina(rutinaId)
                 val treinoActivo = cargarOCrearTreino(rutinaId)
 
-                _editable.value = treinoActivo.rutina_id == 0L
+                // Editable si aún no se han guardado series para este treino
+                val itemsTreino = itemTreinoRepository.getAll().filter { it.treino_id == treinoActivo.id }
+                _editable.value = itemsTreino.isEmpty()
 
-                val seriesMap = cargarSeriesUI(detallesBase, treinoActivo.id)
+                val seriesMap = cargarSeriesUI(detallesBase, treinoActivo)
                 _seriesUI.value = seriesMap
 
             } finally {
@@ -71,6 +72,7 @@ class RutinaDetalleViewModel : ViewModel() {
             }
         }
     }
+
 
     fun actualizarCarga(detalleId: Long, serieIndex: Int, nuevaCarga: Double) {
         if (!_editable.value) return
@@ -162,7 +164,6 @@ class RutinaDetalleViewModel : ViewModel() {
     private suspend fun cargarDetallesRutina(rutinaId: Long): List<ItemRutinaEntity> {
         return itemRutinaRepository.getAll().filter { it.rutina_id == rutinaId }
     }
-
     private suspend fun cargarOCrearTreino(rutinaId: Long): TreinoEntity {
         val treinoExistente = treinoRepository.getAll()
             .find { it.rutina_id == rutinaId }
@@ -171,10 +172,11 @@ class RutinaDetalleViewModel : ViewModel() {
             treinoIdActual = treinoExistente.id
             treinoExistente
         } else {
+            // Crear treino temporalmente sin FK, editable
             val nuevoId = treinoRepository.save(
                 TreinoEntity(
                     id = 0,
-                    rutina_id = 0L, // Pendiente de asociar
+                    rutina_id = rutinaId, // temporal, para permitir creación
                     timestamp = Instant.now().epochSecond,
                     done = false,
                     notas = null
@@ -182,24 +184,28 @@ class RutinaDetalleViewModel : ViewModel() {
             )
 
             treinoIdActual = nuevoId
+            _editable.value = true
+
             treinoRepository.getById(nuevoId)!!
         }
     }
 
     private suspend fun cargarSeriesUI(
         detalles: List<ItemRutinaEntity>,
-        treinoId: Long
+        treino: TreinoEntity
     ): Map<Long, List<SerieUI>> {
 
         val itemsTreino = itemTreinoRepository.getAll()
-            .filter { it.treino_id == treinoId }
+            .filter { it.treino_id == treino.id }
 
         val mapa = mutableMapOf<Long, List<SerieUI>>()
+        val editableGlobal = treino.rutina_id == 0L  // editable si treino aún no está asociado
 
         detalles.forEach { detalle ->
             val serieTreino = itemsTreino.filter { it.exercise_externalid == detalle.exercise_externalid }
 
             val listado = if (serieTreino.isEmpty()) {
+                // Crear series vacías, siempre editables
                 List(detalle.sets_amount) { index ->
                     SerieUI(
                         numero = index + 1,
@@ -211,6 +217,7 @@ class RutinaDetalleViewModel : ViewModel() {
                     )
                 }
             } else {
+                // Crear series basadas en los datos guardados, editable solo si treino es temporal
                 serieTreino.mapIndexed { index, it ->
                     SerieUI(
                         numero = index + 1,
@@ -218,7 +225,7 @@ class RutinaDetalleViewModel : ViewModel() {
                         reps = it.effective_reps,
                         unidad = it.load_unit,
                         meta = construirMeta(detalle),
-                        editable = false
+                        editable = editableGlobal
                     )
                 }
             }
@@ -228,6 +235,7 @@ class RutinaDetalleViewModel : ViewModel() {
 
         return mapa
     }
+
 
     private fun construirMeta(detalle: ItemRutinaEntity): String? {
         return when {

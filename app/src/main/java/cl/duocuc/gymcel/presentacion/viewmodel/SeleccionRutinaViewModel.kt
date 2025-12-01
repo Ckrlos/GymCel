@@ -41,8 +41,8 @@ class SeleccionarRutinaViewModel(
         viewModelScope.launch {
             val entidades: List<RutinaEntity> = rutinaRepository.getAll()
             val modelos = entidades.mapNotNull { entidad ->
-                // Convertir 'dia' de String? a DayOfWeek
-                val dia = entidad.dia?.toIntOrNull()?.takeIf { it in 1..7 }?.let { DayOfWeek.of(it) }
+                // Convertir 'dia' de String? a DayOfWeek usando el nombre del día
+                val dia = entidad.dia?.let { runCatching { DayOfWeek.valueOf(it) }.getOrNull() }
 
                 Rutina(
                     id = entidad.id,
@@ -55,6 +55,7 @@ class SeleccionarRutinaViewModel(
             _rutinas.value = ordenarPorDiaMasCercano(modelos)
         }
     }
+
 
     fun seleccionarRutina(rutina: Rutina) {
         _rutinaSeleccionada.value = rutina

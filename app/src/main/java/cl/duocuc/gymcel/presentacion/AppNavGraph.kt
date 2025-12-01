@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.presentacion.factory.SeleccionarRutinaViewModelFactory
+import cl.duocuc.gymcel.presentacion.ui.screens.HistorialTreino
 import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.RutinaDetalleScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.SeleccionarRutinaScreen
@@ -50,6 +51,10 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
             )
             SeleccionarRutinaScreen(navController, viewModel)
         }
+        composable("rutinasPorDia") {
+            HistorialTreino(navController)
+        }
+
 
 
         // En AppNavGraph.kt - actualizar la ruta

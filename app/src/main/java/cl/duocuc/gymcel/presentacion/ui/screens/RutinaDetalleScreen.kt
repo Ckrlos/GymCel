@@ -41,7 +41,14 @@ fun RutinaDetalleScreen(
                 onBackClick = { navController.popBackStack() }
             )
         },
-        bottomBar = { BottomNavBar(navController) }
+        bottomBar = { BottomNavBar(navController) },
+        floatingActionButton = {
+            if (editable) {
+                FloatingActionButton(onClick = { viewModel.guardarTreino() }) {
+                    Text("Guardar")
+                }
+            }
+        }
     ) { padding ->
 
         Box(modifier = Modifier.padding(padding)) {

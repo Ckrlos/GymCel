@@ -42,7 +42,7 @@ class DatabaseTest {
             id = 1,
             name = "Rutina de ejemplo",
             desc = "Descripción de la rutina de ejemplo",
-            dia = DayOfWeek.MONDAY.name
+            dia = DayOfWeek.SUNDAY.name
         )
 
         // Obtener repository y guardar
