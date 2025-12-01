@@ -2,7 +2,7 @@ package cl.duocuc.gymcel.domain.model
 
 data class DetalleRutina(
     val id: Long,
-    val ejercicio: Ejercicio? = null,
+    val ejercicioId: String? = null,
     val orden: Int,
     val series: Int,
     val objetivoReps: Int?,

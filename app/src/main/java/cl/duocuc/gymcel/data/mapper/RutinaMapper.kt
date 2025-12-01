@@ -21,9 +21,9 @@ fun Rutina.toEntity(): RutinaEntity = RutinaEntity(
     desc = descripcion,
     dia = dia?.name
 )
-fun ItemRutinaEntity.toDomain(): DetalleRutina = toDomain { null }
 
-fun ItemRutinaEntity.toDomain(ejercicioMapper: (String) -> Ejercicio?): DetalleRutina {
+
+fun ItemRutinaEntity.toDomain(): DetalleRutina {
     val rango = if (reps_range_min != null && reps_range_max != null) {
         reps_range_min..reps_range_max
     } else {
@@ -35,7 +35,7 @@ fun ItemRutinaEntity.toDomain(ejercicioMapper: (String) -> Ejercicio?): DetalleR
 
     return DetalleRutina(
         id = id,
-        ejercicio = ejercicioMapper(exercise_externalid),
+        ejercicioId = exercise_externalid,
         orden = order_index,
         series = sets_amount,
         objetivoReps = reps_goal,
@@ -47,7 +47,7 @@ fun ItemRutinaEntity.toDomain(ejercicioMapper: (String) -> Ejercicio?): DetalleR
 fun DetalleRutina.toEntity(rutinaId: Long): ItemRutinaEntity = ItemRutinaEntity(
     id = id,
     rutina_id = rutinaId,
-    exercise_externalid = ejercicio?.id?: "",
+    exercise_externalid = ejercicioId?: "",
     order_index = orden,
     sets_amount = series,
     reps_goal = objetivoReps,
