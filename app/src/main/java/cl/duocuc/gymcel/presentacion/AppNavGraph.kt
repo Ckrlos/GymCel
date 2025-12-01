@@ -25,6 +25,7 @@ import cl.duocuc.gymcel.presentacion.viewmodel.RutinaDetalleViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.SeleccionarRutinaViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.WorkoutLogViewModel
 import cl.duocuc.gymcel.data.FactoryProvider
+import cl.duocuc.gymcel.presentacion.viewmodel.HomeViewModel
 
 
 @Composable
@@ -41,9 +42,19 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
     ) {
 
         composable("home") {
-            HomeScreen(navController = navController)
-        }
 
+            val homeViewModel: HomeViewModel = viewModel(
+                factory = DatabaseViewModelFactory(
+                    HomeViewModel::class.java,
+                    db
+                ) { database -> HomeViewModel(database) }
+            )
+
+            HomeScreen(
+                navController = navController,
+                viewModel = homeViewModel
+            )
+        }
         composable(
             route = "detalleRutina/{id}",
             arguments = listOf(navArgument("id") { type = NavType.IntType })
