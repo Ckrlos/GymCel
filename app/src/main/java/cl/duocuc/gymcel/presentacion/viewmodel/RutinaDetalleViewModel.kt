@@ -46,7 +46,7 @@ class RutinaDetalleViewModel(
         repositoryFactory.create(ItemTreinoEntity::class.java)
     }
     private val itemTreinoDao by lazy {
-        FactoryProvider.daoFactory().create(ItemTreinoEntity::class.java) as ItemTreinoDao
+        FactoryProvider.daoFactory(registry).create(ItemTreinoEntity::class.java) as ItemTreinoDao
     }
     private val itemTreinoService by lazy {
         ItemTreinoDataService(

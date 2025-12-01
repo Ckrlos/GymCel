@@ -28,19 +28,10 @@ object FactoryProvider {
         return cache
     }
 
-    /** Obtiene el DaoFactory con el registro ya inicializado. */
-    fun daoFactory(): DaoFactory {
-        ensureRegistry()
-        return daoFactory(cache)
-    }
 
     fun daoFactory(registry: Map<Class<*>, GymcelDao<*>>): DaoFactory =
         DaoFactoryImpl(registry)
 
-    fun repositoryFactory(): RepositoryFactory {
-        ensureRegistry()
-        return repositoryFactory(cache)
-    }
 
     /** RepositoryFactory basado en un mapa directo */
     fun repositoryFactory(registry: Map<Class<*>, GymcelDao<*>>): RepositoryFactory =
