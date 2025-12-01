@@ -15,10 +15,10 @@ import cl.duocuc.gymcel.presentacion.factory.ExerciseSearchViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.SeleccionarRutinaViewModelFactory
 import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseDetailScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.HistorialTreino
 import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.RutinaDetalleScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.SeleccionarRutinaScreen
-import cl.duocuc.gymcel.presentacion.viewmodel.SeleccionarRutinaViewModel
 
 
 @Composable
@@ -59,7 +59,6 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                 onExerciseSelected = { id -> println("Ejercicio seleccionado: $id")},
                 onOpenDetail = { id -> navController.navigate("exerciseDetail/$id") }
             )
-            SeleccionarRutinaScreen(navController, viewModel)
         }
         composable("rutinasPorDia") {
             HistorialTreino(navController)
