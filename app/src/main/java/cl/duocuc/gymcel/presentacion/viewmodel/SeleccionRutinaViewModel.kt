@@ -19,10 +19,10 @@ class SeleccionarRutinaViewModel(
     db: GymDatabase
 ) : ViewModel() {
 
-    private val rutinaDao: GymcelDao<RutinaEntity> =
-        FactoryProvider.daoFactory(FactoryProvider.registry(db)).create(RutinaEntity::class.java)
+    private val registry = FactoryProvider.registry(db)
 
-    private val rutinaRepository = GymCellRepository(rutinaDao)
+    private val rutinaRepository = FactoryProvider.repositoryFactory(registry)
+        .create(RutinaEntity::class.java)
 
     private val _rutinas = MutableStateFlow<List<Rutina>>(emptyList())
     val rutinas: StateFlow<List<Rutina>> = _rutinas.asStateFlow()

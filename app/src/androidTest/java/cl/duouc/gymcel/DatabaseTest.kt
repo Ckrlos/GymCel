@@ -58,7 +58,7 @@ class DatabaseTest {
 
 
 //         Validación directa vía DAO
-
+        //TODO: hacer validacion 'deep equals' de toda la entidad.
         val daoResult = rutinaDao.getById(idGenerado)
 
 
