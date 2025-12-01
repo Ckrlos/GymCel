@@ -10,6 +10,7 @@ abstract class DataService<DAO : GymcelDao<*>>(
 ) {
 
     suspend fun <R> withDao(block: suspend DAO.() -> R) = dao.block()
+
     suspend fun <R> transactional(block: suspend GymDatabase.() -> R) =
         db.withTransaction { db.block() }
 

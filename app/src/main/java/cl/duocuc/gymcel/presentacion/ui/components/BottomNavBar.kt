@@ -40,7 +40,7 @@ private object NavItems {
         ),
         BottomNavItem(
             title = "Crea tu rutina",
-            route = "seleccionarRutina",
+            route = "searchExercise",
             icon = Icons.Default.Person
         )
     )

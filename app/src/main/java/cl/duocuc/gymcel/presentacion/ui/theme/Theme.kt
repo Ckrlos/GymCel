@@ -6,30 +6,68 @@ import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryColor,
-    secondary = SecondaryColor,
-    tertiary = AccentColor,
-    background = BackgroundColor,
-    surface = SurfaceColor,
     onPrimary = Color.White,
+    primaryContainer = PrimaryContainer,
+    onPrimaryContainer = OnPrimaryContainer,
+
+    secondary = SecondaryColor,
     onSecondary = Color.White,
+    secondaryContainer = SecondaryContainer,
+    onSecondaryContainer = OnSecondaryContainer,
+
+    tertiary = TertiaryColor,
     onTertiary = Color.Black,
+    tertiaryContainer = TertiaryContainer,
+    onTertiaryContainer = OnTertiaryContainer,
+
+    background = BackgroundColor,
     onBackground = TextPrimary,
+
+    surface = SurfaceColor,
     onSurface = TextPrimary,
-    error = ErrorColor
+    surfaceVariant = SurfaceVariant,
+    onSurfaceVariant = OnSurfaceVariant,
+
+    error = ErrorColor,
+    errorContainer = ErrorContainer,
+    onError = Color.White,
+    onErrorContainer = OnErrorContainer,
+
+    outline = Outline,
+    outlineVariant = OutlineVariant
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = PrimaryColor,
-    secondary = SecondaryColor,
-    tertiary = AccentColor,
-    background = Color(0xFF121212),
-    surface = Color(0xFF1E1E1E),
+    primary = PrimaryDark,
     onPrimary = Color.White,
+    primaryContainer = Color(0xFF004916),
+    onPrimaryContainer = PrimaryContainer,
+
+    secondary = SecondaryDark,
     onSecondary = Color.White,
+    secondaryContainer = Color(0xFF00491A),
+    onSecondaryContainer = SecondaryContainer,
+
+    tertiary = TertiaryDark,
     onTertiary = Color.Black,
+    tertiaryContainer = Color(0xFF4A3700),
+    onTertiaryContainer = TertiaryContainer,
+
+    background = Color(0xFF121212),
     onBackground = Color.White,
+
+    surface = Color(0xFF1E1E1E),
     onSurface = Color.White,
-    error = ErrorColor
+    surfaceVariant = Color(0xFF3A3D3A),
+    onSurfaceVariant = Color(0xFFC5C7C5),
+
+    error = ErrorColor,
+    errorContainer = Color(0xFF8C1D18),
+    onError = Color.White,
+    onErrorContainer = ErrorContainer,
+
+    outline = Outline,
+    outlineVariant = Color(0xFF3A3D3A)
 )
 
 @Composable

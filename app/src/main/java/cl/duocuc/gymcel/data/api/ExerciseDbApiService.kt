@@ -8,6 +8,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
+//FIXME: API ROTA CHATGPT SE INVENTO CUALQUIERA, REVISAR API EN PROFUNDIDAD...
 interface ExerciseDbApiService {
 
     @GET("exercises")

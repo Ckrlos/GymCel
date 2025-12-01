@@ -33,7 +33,8 @@ import cl.duocuc.gymcel.domain.model.UnidadPeso
  fun UnidadPicker(
     selected: UnidadPeso,
     enabled: Boolean,
-    onSelect: (UnidadPeso) -> Unit
+    onSelect: (UnidadPeso) -> Unit,
+    values: Array<UnidadPeso> = arrayOf(UnidadPeso.KILOGRAM, UnidadPeso.POUND)
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -71,7 +72,7 @@ import cl.duocuc.gymcel.domain.model.UnidadPeso
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            UnidadPeso.values().forEach { unidad ->
+            values.forEach { unidad ->
                 DropdownMenuItem(
                     text = {
                         Row(

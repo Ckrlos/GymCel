@@ -1,5 +1,4 @@
-package cl.duocuc.gymcel.presentacion.ui.screens
-
+package cl.duocuc.gymcel.presentacion.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -29,8 +27,12 @@ import cl.duocuc.gymcel.domain.model.Ejercicio
 import coil.compose.AsyncImage
 import java.net.URL
 
+/**
+ * Componente reutilizable que muestra el detalle visual completo
+ * de un Ejercicio, incluyendo GIF, músculos, equipamiento e instrucciones.
+ */
 @Composable
-fun DetalleEjercicioScreen(
+fun DetalleEjercicioCard(
     ejercicio: Ejercicio,
     modifier: Modifier = Modifier
 ) {
@@ -38,12 +40,11 @@ fun DetalleEjercicioScreen(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
 
-        // GIF centrado y grande
+        // GIF (si existe)
         ejercicio.gif?.let { url ->
             AsyncImage(
                 model = url.toString(),
@@ -58,6 +59,7 @@ fun DetalleEjercicioScreen(
             Spacer(Modifier.height(16.dp))
         }
 
+        // Nombre
         Text(
             text = ejercicio.nombre,
             style = MaterialTheme.typography.headlineSmall,
@@ -66,11 +68,11 @@ fun DetalleEjercicioScreen(
 
         Spacer(Modifier.height(20.dp))
 
-        detalle?.let {
+        detalle?.let { det ->
 
-            // Músculos principales
+
             Text(
-                text = "Músculos trabajados",
+                "Músculos trabajados",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
@@ -81,7 +83,7 @@ fun DetalleEjercicioScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                it.musculosTrabajados.forEach { musculo ->
+                det.musculosTrabajados.forEach { musculo ->
                     Box(
                         modifier = Modifier
                             .background(
@@ -90,20 +92,22 @@ fun DetalleEjercicioScreen(
                             )
                             .padding(horizontal = 12.dp, vertical = 6.dp)
                     ) {
-                        Text(musculo, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                        Text(
+                            musculo,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                        )
                     }
                 }
             }
 
             Spacer(Modifier.height(20.dp))
 
-            // Equipamiento
+
             Text(
                 "Equipamiento",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.SemiBold
             )
-
             Spacer(Modifier.height(8.dp))
 
             FlowRow(
@@ -111,7 +115,7 @@ fun DetalleEjercicioScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                it.equipamiento.forEach { eq ->
+                det.equipamiento.forEach { eq ->
                     Box(
                         modifier = Modifier
                             .background(
@@ -120,14 +124,17 @@ fun DetalleEjercicioScreen(
                             )
                             .padding(horizontal = 10.dp, vertical = 5.dp)
                     ) {
-                        Text(eq, color = MaterialTheme.colorScheme.onSecondaryContainer)
+                        Text(
+                            eq,
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
                     }
                 }
             }
 
             Spacer(Modifier.height(20.dp))
 
-            // Instrucciones numeradas
+
             Text(
                 "Instrucciones",
                 style = MaterialTheme.typography.titleMedium,
@@ -137,12 +144,8 @@ fun DetalleEjercicioScreen(
             Spacer(Modifier.height(12.dp))
 
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                it.instrucciones.forEachIndexed { index, paso ->
+                det.instrucciones.forEachIndexed { index, paso ->
                     Row {
-                        Text(
-                            "${index + 1}. ",
-                            fontWeight = FontWeight.Bold
-                        )
                         Text(paso)
                     }
                 }
@@ -153,8 +156,8 @@ fun DetalleEjercicioScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewDetalleEjercicioScreen() {
-    DetalleEjercicioScreen(
+fun PreviewDetalleEjercicioCard() {
+    DetalleEjercicioCard(
         ejercicio = Ejercicio(
             id = "1",
             nombre = "Sentadilla con barra",
