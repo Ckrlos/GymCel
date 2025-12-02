@@ -11,6 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import cl.duocuc.gymcel.AppRoutes
 import cl.duocuc.gymcel.presentacion.ui.components.BottomNavBar
 import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
 import cl.duocuc.gymcel.presentacion.viewmodel.HomeViewModel
@@ -19,7 +20,7 @@ import cl.duocuc.gymcel.presentacion.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(),
 ) {
 
     val treinoPendiente by viewModel.treinoPendiente.collectAsState()
@@ -77,7 +78,6 @@ fun HomeScreen(
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-
                             treinoPendiente!!.rutinaNombre,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
@@ -86,8 +86,8 @@ fun HomeScreen(
                         Spacer(modifier = Modifier.height(8.dp))
 
                         Button(onClick = {
-
-                            navController.navigate("rutina_detalle/${treinoPendiente!!.treinoId}")
+                            // treino id si esta en el pendiente, o 0L por si acaso
+                            navController.navigate(AppRoutes.DETALLE_TREINO(treinoPendiente?.treinoId ?: 0L))
                         }) {
                             Text("Continuar Treino")
                         }

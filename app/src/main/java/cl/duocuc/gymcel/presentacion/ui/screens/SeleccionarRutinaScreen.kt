@@ -1,26 +1,10 @@
-// SeleccionarRutinaScreen.kt
 package cl.duocuc.gymcel.presentacion.ui.screens
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -37,7 +21,8 @@ import cl.duocuc.gymcel.presentacion.viewmodel.SeleccionarRutinaViewModel
 @Composable
 fun SeleccionarRutinaScreen(
     navController: NavController,
-    viewModel: SeleccionarRutinaViewModel = viewModel()
+    viewModel: SeleccionarRutinaViewModel = viewModel(),
+    onTreinoSeleccionado: (Long) -> Unit
 ) {
 
     val rutinas = viewModel.rutinas.collectAsState().value
@@ -47,7 +32,8 @@ fun SeleccionarRutinaScreen(
     Scaffold(
         topBar = { TopNavBar() },
         bottomBar = {
-            BottomNavBar(navController = navController)
+            // Ahora ya no recibe navController, sólo UI
+            BottomNavBar(navController)
         }
     ) { padding ->
         Column(
@@ -70,6 +56,7 @@ fun SeleccionarRutinaScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Box(modifier = Modifier.fillMaxWidth()) {
+
                 OutlinedTextField(
                     value = rutinaSeleccionada?.nombre ?: "",
                     onValueChange = {},
@@ -107,10 +94,8 @@ fun SeleccionarRutinaScreen(
                                 )
                             },
                             onClick = {
-                                // En lugar de navegar directamente, llamamos a la función que maneja la lógica
                                 viewModel.seleccionarRutina(rutina) { treinoId ->
-                                    // 🚀 Navegar usando el ID del TREINO
-                                    navController.navigate("treino_detalle/${treinoId}")
+                                    onTreinoSeleccionado(treinoId)
                                 }
                             }
                         )

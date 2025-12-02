@@ -1,16 +1,15 @@
 package cl.duocuc.gymcel.presentacion
 
 import android.content.Context
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.AppRoutes
+import cl.duocuc.gymcel.core.navigation.composable
 import cl.duocuc.gymcel.presentacion.factory.ApiServiceViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.DatabaseViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.GenericViewModelFactory
@@ -19,7 +18,7 @@ import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchViewModel
 import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseDetailScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.WorkoutLogScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
-import cl.duocuc.gymcel.presentacion.ui.screens.RutinaDetalleScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.DetalleTreinoScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.SeleccionarRutinaScreen
 import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaDetalleViewModel
@@ -34,7 +33,6 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
     val db = AppConstants.getDatabase(context)
     val apiService = AppConstants.getApiService()
     val registry = FactoryProvider.registry(db)
-
 
     NavHost(
         navController = navController,
@@ -53,16 +51,16 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
             )
         }
 
-        composable("seleccionarRutina") {
+        composable(AppRoutes.SELECTOR_RUTINA()) {
             SeleccionarRutinaScreen(navController, viewModel(
                 factory = DatabaseViewModelFactory(
                     SeleccionarRutinaViewModel::class.java,
                     db
                 ) { database -> SeleccionarRutinaViewModel(database) }
-            ))
+            )) { id -> navController.navigate(AppRoutes.DETALLE_TREINO(id)) }
         }
 
-        composable("searchExercise") {
+        composable(AppRoutes.BUSCAR_EJERCICIO()) {
             ExerciseSearchScreen(
                 viewModel = viewModel(
                     factory = ApiServiceViewModelFactory(ExerciseSearchViewModel::class.java,
@@ -70,18 +68,19 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                     ) { api -> ExerciseSearchViewModel(api) }
                 ),
                 onExerciseSelected = { id -> println("Ejercicio seleccionado: $id")},
-                onOpenDetail = { id -> navController.navigate("exerciseDetail/$id") },
+                onOpenDetail = { id -> navController.navigate(AppRoutes.DETALLE_EJERCICIO(id)) },
                 onBackClick = { navController.popBackStack() }
             )
         }
 
-        composable("exerciseDetail/{exerciseId}",
-            arguments = listOf(navArgument("exerciseId") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val exerciseId = backStackEntry.arguments?.getString("exerciseId") ?: ""
+        AppRoutes.DETALLE_EJERCICIO.composable(this) { params ->
+
+            val exerciseId = params.getOrNull(0) ?: ""
+
             ExerciseDetailScreen(
                 viewModel = viewModel(
-                    factory = ApiServiceViewModelFactory(ExerciseDetailViewModel::class.java,
+                    factory = ApiServiceViewModelFactory(
+                        ExerciseDetailViewModel::class.java,
                         apiService
                     ) { api -> ExerciseDetailViewModel(api) }
                 ),
@@ -91,8 +90,7 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
             )
         }
 
-
-        composable("rutinasPorDia") {
+        composable(AppRoutes.WORKOUT_LOG()) {
             WorkoutLogScreen(
                 navController,
                 viewModel = viewModel(
@@ -104,16 +102,11 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                 )
         }
 
+        AppRoutes.DETALLE_TREINO.composable(this, navType = NavType.LongType) { params ->
+            //FIXME: que pasa en la condicion que caiga en 0L ? como estamos manejando ese caso...
+            val treinoId = params[0]?.toLongOrNull() ?: 0L
 
-        composable(
-            "treino_detalle/{treinoId}",
-            arguments = listOf(
-                navArgument("treinoId") { type = NavType.LongType }
-            )
-        ) { navBackStackEntry ->
-            val treinoId = navBackStackEntry.arguments?.getLong("treinoId") ?: 0L
-
-            RutinaDetalleScreen(
+            DetalleTreinoScreen(
                 navController = navController,
                 treinoId = treinoId,
                 viewModel = viewModel(

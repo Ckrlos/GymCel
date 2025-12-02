@@ -19,7 +19,7 @@ import cl.duocuc.gymcel.presentacion.ui.components.ExerciseCard
 import cl.duocuc.gymcel.presentacion.ui.components.UltimoTreinoDialog
 
 @Composable
-fun RutinaDetalleScreen(
+fun DetalleTreinoScreen(
     navController: NavController,
     treinoId: Long,
     viewModel: RutinaDetalleViewModel = viewModel()

@@ -34,12 +34,12 @@ object AppRoutes {
                 ),
                 BottomNavItem(
                     title = "Log",
-                    route = "rutinasPorDia",
+                    route = WORKOUT_LOG(),
                     icon = Icons.Default.Book
                 ),
                 BottomNavItem(
                     title = "Crear Rutina",
-                    route = "searchExercise",
+                    route = BUSCAR_EJERCICIO(), //TODO: cambiar a selector rutina cuando exista...
                     icon = Icons.Default.FitnessCenter
                 )
             ).also{ navItems = it }
@@ -47,13 +47,13 @@ object AppRoutes {
     }
 
 
-    val TREINO_FORM = route {
-        text("mktreino")
+    val DETALLE_TREINO = route {
+        text("treino")
         param("id")
     }
 
     val RUTINA_FORM = route {
-        text("mkrutina")
+        text("rutina")
     }
 
     val BUSCAR_EJERCICIO = route {

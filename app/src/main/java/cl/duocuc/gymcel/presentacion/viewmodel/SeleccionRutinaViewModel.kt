@@ -82,7 +82,8 @@ class SeleccionarRutinaViewModel(
                         id = 0,
                         rutina_id = rutina.id,
                         // Usar Instant.now().epochSecond si el timestamp es Long/segundos
-                        timestamp = java.time.Instant.now().epochSecond,
+                        //vgonz: que tome el valor por defecto mejor...
+                        //timestamp = java.time.Instant.now().epochSecond,
                         done = false,
                         notas = null
                     )

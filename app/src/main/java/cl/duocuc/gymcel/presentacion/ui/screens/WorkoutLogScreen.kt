@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import cl.duocuc.gymcel.AppRoutes
 import cl.duocuc.gymcel.presentacion.ui.components.BottomNavBar
 import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
 import cl.duocuc.gymcel.presentacion.ui.components.TreinoCard
@@ -35,7 +36,7 @@ fun WorkoutLogScreen(
             FloatingActionButton(
                 // Navega a la pantalla para INICIAR un nuevo treino (seleccionando una Rutina)
                 onClick = {
-                    navController.navigate("seleccionarRutina")
+                    navController.navigate(AppRoutes.SELECTOR_RUTINA())
                 },
                 containerColor = MaterialTheme.colorScheme.primary
             ) {
@@ -74,7 +75,7 @@ fun WorkoutLogScreen(
                     TreinoCard(
                         treino = treino,
                         onClick = {
-                            navController.navigate("treino_detalle/${treino.treinoId}")
+                            navController.navigate(AppRoutes.DETALLE_TREINO(treino.treinoId))
                         }
                     )
                 }
