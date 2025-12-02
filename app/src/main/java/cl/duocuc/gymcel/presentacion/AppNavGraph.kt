@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import cl.duocuc.gymcel.AppConstants
+import cl.duocuc.gymcel.AppRoutes
 import cl.duocuc.gymcel.presentacion.factory.ApiServiceViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.DatabaseViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.GenericViewModelFactory
@@ -33,34 +34,23 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
     val db = AppConstants.getDatabase(context)
     val apiService = AppConstants.getApiService()
     val registry = FactoryProvider.registry(db)
-    val goBack = { navController.popBackStack() }
 
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = AppRoutes.HOME()
     ) {
 
-        composable("home") {
-
-            val homeViewModel: HomeViewModel = viewModel(
-                factory = DatabaseViewModelFactory(
-                    HomeViewModel::class.java,
-                    db
-                ) { database -> HomeViewModel(database) }
-            )
-
+        composable(AppRoutes.HOME()) {
             HomeScreen(
                 navController = navController,
-                viewModel = homeViewModel
+                viewModel = viewModel(
+                    factory = DatabaseViewModelFactory(
+                        HomeViewModel::class.java,
+                        db
+                    ) { database -> HomeViewModel(database) }
+                )
             )
-        }
-        composable(
-            route = "detalleRutina/{id}",
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
-        ) { backStackEntry ->
-            val rutinaId = backStackEntry.arguments?.getInt("id") ?: 0
-            Text("Detalle de rutina $rutinaId (en construcción)")
         }
 
         composable("seleccionarRutina") {
@@ -115,7 +105,6 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
         }
 
 
-        // En AppNavGraph.kt - actualizar la ruta
         composable(
             "treino_detalle/{treinoId}",
             arguments = listOf(

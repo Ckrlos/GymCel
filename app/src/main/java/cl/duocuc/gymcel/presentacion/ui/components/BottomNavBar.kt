@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
+import cl.duocuc.gymcel.AppRoutes
 
 // Data class para representar cada item del navbar
 data class BottomNavItem(
@@ -26,34 +27,12 @@ data class BottomNavItem(
     val icon: ImageVector
 )
 
-private object NavItems {
-    //TODO: poner rutas reales...
-    val list = listOf(
-        BottomNavItem(
-            title = "Inicio",
-            route = "home",
-            icon = Icons.Default.Home
-        ),
-        BottomNavItem(
-            title = "Log",
-            route = "rutinasPorDia",
-            icon = Icons.Default.Book
-        ),
-        BottomNavItem(
-            title = "Crear Rutina",
-            route = "searchExercise",
-            icon = Icons.Default.FitnessCenter
-        )
-    )
-}
-
-
 @Composable
 fun BottomNavBar(
     navController: NavController,
     modifier: Modifier = Modifier,
     currentRoute: String? = navController.currentBackStackEntryAsState().value?.destination?.route,
-    navItems: List<BottomNavItem> = NavItems.list
+    navItems: List<BottomNavItem> = AppRoutes.getBottomNavItems()
 ) {
 
     NavigationBar(

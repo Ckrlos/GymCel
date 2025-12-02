@@ -13,28 +13,29 @@ import cl.duocuc.gymcel.domain.data.RepositoryFactory
 object FactoryProvider {
 
     // Nunca nulo. Si no ha sido inicializado, se lanza error explícito.
-    private lateinit var cache: Map<Class<*>, GymcelDao<*>>
+    private lateinit var cache: Map<Class<*>, () -> GymcelDao<*>>
 
     /** Inicializa el registro y lo retorna. */
-    fun registry(db: GymDatabase): Map<Class<*>, GymcelDao<*>> {
+    fun registry(db: GymDatabase): Map<Class<*>, () -> GymcelDao<*>> {
         if (!::cache.isInitialized) {
             cache = mapOf(
-                RutinaEntity::class.java to db.rutinaDao(),
-                ItemRutinaEntity::class.java to db.itemRutinaDao(),
-                TreinoEntity::class.java to db.treinoDao(),
-                ItemTreinoEntity::class.java to db.itemTreinoDao(),
+                RutinaEntity::class.java to { db.rutinaDao() },
+                ItemRutinaEntity::class.java to { db.itemRutinaDao() },
+                TreinoEntity::class.java to { db.treinoDao() },
+                ItemTreinoEntity::class.java to { db.itemTreinoDao() },
             )
         }
         return cache
     }
 
 
-    fun daoFactory(registry: Map<Class<*>, GymcelDao<*>>): DaoFactory =
+
+    fun daoFactory(registry: Map<Class<*>, () -> GymcelDao<*>>): DaoFactory =
         DaoFactoryImpl(registry)
 
 
     /** RepositoryFactory basado en un mapa directo */
-    fun repositoryFactory(registry: Map<Class<*>, GymcelDao<*>>): RepositoryFactory =
+    fun repositoryFactory(registry: Map<Class<*>, () -> GymcelDao<*>>): RepositoryFactory =
         RepositoryFactoryMappedImpl(registry)
 
     /** RepositoryFactory basado en un DaoFactory */
@@ -45,13 +46,5 @@ object FactoryProvider {
     fun repositoryFactory(daoMapper: (Class<*>) -> GymcelDao<*>?): RepositoryFactory =
         RepositoryFactoryFunctionalImpl(daoMapper)
 
-    /** Falla temprano si alguien intenta usar factories sin registro */
-    private fun ensureRegistry() {
-        if (!::cache.isInitialized) {
-            throw IllegalStateException(
-                "FactoryProvider: registry(db) debe ser llamado antes de solicitar un DaoFactory o RepositoryFactory."
-            )
-        }
-    }
 
 }

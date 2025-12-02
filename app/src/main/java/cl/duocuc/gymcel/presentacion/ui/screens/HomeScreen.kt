@@ -19,7 +19,6 @@ import cl.duocuc.gymcel.presentacion.viewmodel.HomeViewModel
 @Composable
 fun HomeScreen(
     navController: NavController,
-
     viewModel: HomeViewModel = viewModel()
 ) {
 

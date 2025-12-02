@@ -28,9 +28,6 @@ fun DetalleRutinaCard(
     initial: DetalleRutina? = null,
     onValueChange: (DetalleRutina) -> Unit
 ) {
-    // ------------------------
-    // Estado interno del form
-    // ------------------------
     var series by remember { mutableStateOf(initial?.series ?: 3) }
     var repsObjetivo by remember { mutableStateOf(initial?.objetivoReps ?: 10) }
 
@@ -41,7 +38,7 @@ fun DetalleRutinaCard(
     var tipoSerie by remember { mutableStateOf(initial?.tipoSerie ?: TipoSerie.STRAIGHT) }
     var tipoExpand by remember { mutableStateOf(false) }
 
-    // Cada vez que cambia el estado, generamos DetalleRutina y lo devolvemos al padre
+
     LaunchedEffect(series, repsObjetivo, isRange, rangoMin, rangoMax, tipoSerie) {
         val detalle = DetalleRutina(
             id = initial?.id ?: 0,
@@ -55,9 +52,6 @@ fun DetalleRutinaCard(
         onValueChange(detalle)
     }
 
-    // ------------------------
-    // UI - TARJETA
-    // ------------------------
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,9 +65,6 @@ fun DetalleRutinaCard(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
 
-            // ------------------------
-            // ENCABEZADO
-            // ------------------------
             Text(
                 text = ejercicioNombre,
                 style = MaterialTheme.typography.titleMedium
@@ -81,9 +72,6 @@ fun DetalleRutinaCard(
 
             Divider()
 
-            // ------------------------
-            // SERIES
-            // ------------------------
             OutlinedTextField(
                 value = series.toString(),
                 onValueChange = { series = it.toIntOrNull() ?: series },
@@ -92,9 +80,6 @@ fun DetalleRutinaCard(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // ------------------------
-            // SWITCH: objetivo vs rango
-            // ------------------------
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("Usar rango de repeticiones")
                 Spacer(modifier = Modifier.weight(1f))
@@ -104,9 +89,6 @@ fun DetalleRutinaCard(
                 )
             }
 
-            // ------------------------
-            // REPS / RANGO
-            // ------------------------
             if (isRange) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -137,9 +119,7 @@ fun DetalleRutinaCard(
                 )
             }
 
-            // ------------------------
-            // TIPO DE SERIE (CON DESC)
-            // ------------------------
+
             ExposedDropdownMenuBox(
                 expanded = tipoExpand,
                 onExpandedChange = { tipoExpand = it }
