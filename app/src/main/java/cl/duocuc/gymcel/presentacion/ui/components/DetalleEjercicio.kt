@@ -32,7 +32,7 @@ import java.net.URL
  * de un Ejercicio, incluyendo GIF, músculos, equipamiento e instrucciones.
  */
 @Composable
-fun DetalleEjercicioCard(
+fun DetalleEjercicio(
     ejercicio: Ejercicio,
     modifier: Modifier = Modifier
 ) {
@@ -158,8 +158,8 @@ fun DetalleEjercicioCard(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewDetalleEjercicioCard() {
-    DetalleEjercicioCard(
+fun PreviewDetalleEjercicio() {
+    DetalleEjercicio(
         ejercicio = Ejercicio(
             id = "1",
             nombre = "Sentadilla con barra",

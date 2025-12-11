@@ -31,7 +31,7 @@ import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchViewModel
 @Composable
 fun ExerciseSearchScreen(
     viewModel: ExerciseSearchViewModel,
-    onExerciseSelected: (String) -> Unit,
+    onExerciseSelected: (Ejercicio) -> Unit,
     onOpenDetail: (String) -> Unit,
     onBackClick: (() -> Unit)? = null
 ) {
@@ -99,7 +99,7 @@ fun ExerciseSearchScreen(
                     Column {
                         EjercicioListItem(
                             ejercicio = ejercicio,
-                            onItemClick = { onExerciseSelected(ejercicio.id) },
+                            onItemClick = { onExerciseSelected(ejercicio) },
                             onIconClick = { onOpenDetail(ejercicio.id) }
                         )
 

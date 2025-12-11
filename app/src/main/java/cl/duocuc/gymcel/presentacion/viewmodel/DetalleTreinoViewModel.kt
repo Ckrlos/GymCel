@@ -1,6 +1,6 @@
 package cl.duocuc.gymcel.presentacion.viewmodel
 
-import ItemTreinoDataService
+import cl.duocuc.gymcel.data.service.ItemTreinoDataService
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,9 +17,8 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.Instant
-import kotlin.collections.iterator
 
-class RutinaDetalleViewModel(
+class DetalleTreinoViewModel(
     db :GymDatabase
 ) : ViewModel() {
 

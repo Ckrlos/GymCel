@@ -21,7 +21,7 @@ import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.DetalleTreinoScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.SeleccionarRutinaScreen
 import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailViewModel
-import cl.duocuc.gymcel.presentacion.viewmodel.RutinaDetalleViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.DetalleTreinoViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.SeleccionarRutinaViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.WorkoutLogViewModel
 import cl.duocuc.gymcel.data.FactoryProvider
@@ -67,15 +67,15 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                         apiService
                     ) { api -> ExerciseSearchViewModel(api) }
                 ),
-                onExerciseSelected = { id -> println("Ejercicio seleccionado: $id")},
+                onExerciseSelected = { exercise -> println("Ejercicio seleccionado: $exercise")},
                 onOpenDetail = { id -> navController.navigate(AppRoutes.DETALLE_EJERCICIO(id)) },
                 onBackClick = { navController.popBackStack() }
             )
         }
 
         AppRoutes.DETALLE_EJERCICIO.composable(this) { params ->
-
-            val exerciseId = params.getOrNull(0) ?: ""
+            // lo dejamos nuleable porque la pantalla maneja el caso null internamente.
+            val exerciseId = params.getOrNull(0)
 
             ExerciseDetailScreen(
                 viewModel = viewModel(
@@ -111,9 +111,9 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                 treinoId = treinoId,
                 viewModel = viewModel(
                     factory = DatabaseViewModelFactory(
-                        RutinaDetalleViewModel::class.java,
+                        DetalleTreinoViewModel::class.java,
                         db
-                    ) { db -> RutinaDetalleViewModel(db) }
+                    ) { db -> DetalleTreinoViewModel(db) }
                 )
             )
         }

@@ -1,11 +1,10 @@
 package cl.duocuc.gymcel.data.local.entities.relations
 
 import androidx.room.Embedded
-import androidx.room.Junction
 import androidx.room.Relation
 import cl.duocuc.gymcel.data.local.entities.*
 
-data class RutinaConDetalle(
+data class MaestroRutina(
     @Embedded val rutina: RutinaEntity,
 
     @Relation(
@@ -16,7 +15,7 @@ data class RutinaConDetalle(
     val entries: List<ItemRutinaEntity>
 )
 
-data class TreinoConDetalle(
+data class MaestroTreino(
     @Embedded
     val treino: TreinoEntity,
 

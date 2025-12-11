@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -16,7 +15,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import cl.duocuc.gymcel.presentacion.ui.components.DetalleEjercicioCard
+import cl.duocuc.gymcel.presentacion.ui.components.CenteredText
+import cl.duocuc.gymcel.presentacion.ui.components.DetalleEjercicio
 import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
 import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailUiState
 import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailViewModel
@@ -25,11 +25,16 @@ import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailViewModel
 @Composable
 fun ExerciseDetailScreen(
     viewModel: ExerciseDetailViewModel,
-    exerciseId: String,
+    exerciseId: String?,
     onSelect: (String) -> Unit,
     onBackClick: (() -> Unit)? = null
 ) {
     val state by viewModel.uiState.collectAsState()
+
+    if (exerciseId == null) {
+        CenteredText("nada que ver aqui...")
+        return;
+    }
 
     LaunchedEffect(exerciseId) {
         viewModel.loadExercise(exerciseId)
@@ -83,7 +88,7 @@ fun ExerciseDetailScreen(
                         .padding(paddingValues)
                         .padding(16.dp)
                 ) {
-                    DetalleEjercicioCard(
+                    DetalleEjercicio(
                         ejercicio = ejercicio,
                         modifier = Modifier.weight(1f)
                     )

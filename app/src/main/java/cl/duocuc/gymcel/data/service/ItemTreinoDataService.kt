@@ -1,9 +1,9 @@
+package cl.duocuc.gymcel.data.service
 
 import cl.duocuc.gymcel.data.local.dao.ItemTreinoDao
 import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
-import cl.duocuc.gymcel.domain.data.DataService // Importa tu clase base genérica
-
+import cl.duocuc.gymcel.domain.data.DataService
 
 class ItemTreinoDataService(
     db: GymDatabase,
