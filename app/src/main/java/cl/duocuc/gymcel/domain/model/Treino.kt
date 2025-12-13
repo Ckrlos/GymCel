@@ -8,5 +8,5 @@ data class Treino(
     val timestamp: Instant,
     val done: Boolean = false,
     val notas: String? = null,
-    val detalleTreino: List<DetalleTreino>? = null //1:N
+    val detalles: List<DetalleTreino>? = null //1:N
 )

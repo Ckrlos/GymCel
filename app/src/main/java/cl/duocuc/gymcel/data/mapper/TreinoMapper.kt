@@ -2,6 +2,7 @@ package cl.duocuc.gymcel.data.mapper
 
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
+import cl.duocuc.gymcel.data.local.entities.relations.MaestroTreino
 import cl.duocuc.gymcel.domain.model.DetalleTreino
 import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.Peso
@@ -51,4 +52,19 @@ fun DetalleTreino.toEntity(treinoId: Long): ItemTreinoEntity = ItemTreinoEntity(
     load_unit = cargaEfectiva.unit.name,
     rir = rir,
     rest_nanos = descanso?.inWholeNanoseconds
+)
+
+fun MaestroTreino.toDomain(): Treino = treino.toDomain().copy(
+    detalles = entries.sortedBy { it.id }.map { it.toDomain() }
+)
+
+fun MaestroTreino.toDomain(
+    ejercicioMapper: (String) -> Ejercicio?
+): Treino = treino.toDomain().copy(
+    detalles = entries.sortedBy { it.id }.map { it.toDomain(ejercicioMapper) }
+)
+
+fun Treino.toMasterEntity(): MaestroTreino = MaestroTreino(
+    treino = this.toEntity(),
+    entries = this.detalles?.map { it.toEntity(this.id) } ?: emptyList()
 )

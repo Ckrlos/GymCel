@@ -206,7 +206,7 @@ class RutinaFormViewModel(
             nombre = header.nombre.trim(),
             descripcion = header.descripcion.takeIf { it.isNotBlank() },
             dia = header.dia,
-            detalleRutina = detallesOrdenados
+            detalles = detallesOrdenados
         )
     }
 }

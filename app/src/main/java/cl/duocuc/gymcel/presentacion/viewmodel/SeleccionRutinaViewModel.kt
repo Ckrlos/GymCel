@@ -1,10 +1,8 @@
 package cl.duocuc.gymcel.presentacion.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duocuc.gymcel.data.FactoryProvider
-import cl.duocuc.gymcel.data.local.dao.GymcelDao
 import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
@@ -14,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
-import java.time.Instant
 import java.time.LocalDate
 
 class SeleccionarRutinaViewModel(
@@ -52,7 +49,7 @@ class SeleccionarRutinaViewModel(
                     nombre = entidad.name,
                     descripcion = entidad.desc,
                     dia = dia,
-                    detalleRutina = emptyList()
+                    detalles = emptyList()
                 )
             }
             _rutinas.value = ordenarPorDiaMasCercano(modelos)

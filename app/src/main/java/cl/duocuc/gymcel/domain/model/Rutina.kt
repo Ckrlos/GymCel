@@ -7,5 +7,5 @@ data class Rutina(
     val nombre: String,
     val descripcion: String?,
     val dia: DayOfWeek? = null,
-    val detalleRutina: List<DetalleRutina>? = null //1:N
+    val detalles: List<DetalleRutina>? = null //1:N
 )

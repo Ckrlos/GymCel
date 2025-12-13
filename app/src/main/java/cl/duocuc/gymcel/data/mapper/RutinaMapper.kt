@@ -2,8 +2,8 @@ package cl.duocuc.gymcel.data.mapper
 
 import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
+import cl.duocuc.gymcel.data.local.entities.relations.MaestroRutina
 import cl.duocuc.gymcel.domain.model.DetalleRutina
-import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.Rutina
 import cl.duocuc.gymcel.domain.model.TipoSerie
 import java.time.DayOfWeek
@@ -54,4 +54,13 @@ fun DetalleRutina.toEntity(rutinaId: Long): ItemRutinaEntity = ItemRutinaEntity(
     reps_range_min = rangoReps?.first,
     reps_range_max = rangoReps?.last,
     variation = tipoSerie?.name ?: TipoSerie.STRAIGHT.name
+)
+
+fun MaestroRutina.toDomain(): Rutina = rutina.toDomain().copy(
+    detalles = entries.sortedBy { it.order_index }.map { it.toDomain() }
+)
+
+fun Rutina.toMasterEntity(): MaestroRutina = MaestroRutina(
+    rutina = this.toEntity(),
+    entries = this.detalles?.map { it.toEntity(this.id) } ?: emptyList()
 )
