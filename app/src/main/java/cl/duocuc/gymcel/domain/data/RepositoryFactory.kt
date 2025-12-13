@@ -5,8 +5,8 @@ import cl.duocuc.gymcel.data.repository.GymcelRepository
 
 interface RepositoryFactory {
 
-    fun <T, DAO : GymcelDao<T>> create(entityClass: Class<T>) : GymcelRepository<T, DAO>
+    fun <T, DAO: GymcelDao<T> > create(entityClass: Class<T>): Repository<T, Long>
 
-    fun <T, DAO : GymcelDao<T>> create(dao: DAO) : GymcelRepository<T, DAO> = GymcelRepository(dao)
+    fun <T, DAO: GymcelDao<T>> create(dao: DAO) : Repository<T, Long> = GymcelRepository(dao)
 
 }

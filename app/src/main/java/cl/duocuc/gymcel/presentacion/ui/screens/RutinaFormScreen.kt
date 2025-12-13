@@ -8,19 +8,58 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import cl.duocuc.gymcel.AppConstants
+import cl.duocuc.gymcel.AppRoutes
 import cl.duocuc.gymcel.domain.model.DetalleRutina
+import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.TipoSerie
 import cl.duocuc.gymcel.presentacion.ui.components.DetalleRutinaFormCard
 import cl.duocuc.gymcel.presentacion.ui.components.UnderlineTextField
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaDetalleItemUi
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaFormUiState
+import cl.duocuc.gymcel.presentacion.viewmodel.RutinaFormViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaHeaderUi
 import java.time.DayOfWeek
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun RutinaFormScreen(
+    viewModel: RutinaFormViewModel,
+    navController: NavController
+) {
+    val savedStateHandle = navController.currentBackStackEntry
+        ?.savedStateHandle
+
+    val ejercicioSeleccionado =
+        savedStateHandle?.get<Ejercicio>(AppConstants.StateKeys.EJERCICIO_SEL)
+
+    if (ejercicioSeleccionado != null) {
+        viewModel.addDetalleForExercise(ejercicioSeleccionado)
+        savedStateHandle.remove<Ejercicio>(AppConstants.StateKeys.EJERCICIO_SEL)
+    }
+
+    RutinaForm(
+        state = viewModel.uiState.collectAsState().value,
+        onNombreChange = viewModel::onNombreChange,
+        onDescripcionChange = viewModel::onDescripcionChange,
+        onDiaChange = viewModel::onDiaChange,
+        onDetalleChange = viewModel::onDetalleChanged,
+        onRemoveDetalle = viewModel::onRemoveDetalle,
+
+        onAddDetalleClick = {
+            navController.navigate(AppRoutes.BUSCAR_EJERCICIO())
+        },
+
+        onGuardarClick = viewModel::onGuardarClick
+    )
+}
 
 
 /**

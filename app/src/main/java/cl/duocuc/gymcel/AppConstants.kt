@@ -60,4 +60,8 @@ object AppConstants {
         return retrofit.create(ExerciseDbApiService::class.java)
     }
 
+    object StateKeys {
+        const val EJERCICIO_SEL = "slctd_xrsice"
+    }
+
 }

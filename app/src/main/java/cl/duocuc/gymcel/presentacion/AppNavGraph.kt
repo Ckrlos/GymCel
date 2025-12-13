@@ -10,22 +10,26 @@ import androidx.navigation.compose.composable
 import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.AppRoutes
 import cl.duocuc.gymcel.core.navigation.composable
+import cl.duocuc.gymcel.data.FactoryProvider
+import cl.duocuc.gymcel.data.local.entities.relations.MaestroRutina
+import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.presentacion.factory.ApiServiceViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.DatabaseViewModelFactory
 import cl.duocuc.gymcel.presentacion.factory.GenericViewModelFactory
-import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseSearchScreen
 import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchViewModel
-import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseDetailScreen
-import cl.duocuc.gymcel.presentacion.ui.screens.WorkoutLogScreen
-import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.DetalleTreinoScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseDetailScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.ExerciseSearchScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.HomeScreen
+import cl.duocuc.gymcel.presentacion.ui.screens.RutinaFormScreen
 import cl.duocuc.gymcel.presentacion.ui.screens.SeleccionarRutinaScreen
-import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailViewModel
+import cl.duocuc.gymcel.presentacion.ui.screens.WorkoutLogScreen
 import cl.duocuc.gymcel.presentacion.viewmodel.DetalleTreinoViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseDetailViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.HomeViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.RutinaFormViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.SeleccionarRutinaViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.WorkoutLogViewModel
-import cl.duocuc.gymcel.data.FactoryProvider
-import cl.duocuc.gymcel.presentacion.viewmodel.HomeViewModel
 
 
 @Composable
@@ -63,15 +67,49 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
         composable(AppRoutes.BUSCAR_EJERCICIO()) {
             ExerciseSearchScreen(
                 viewModel = viewModel(
-                    factory = ApiServiceViewModelFactory(ExerciseSearchViewModel::class.java,
+                    factory = ApiServiceViewModelFactory(
+                        ExerciseSearchViewModel::class.java,
                         apiService
                     ) { api -> ExerciseSearchViewModel(api) }
                 ),
-                onExerciseSelected = { exercise -> println("Ejercicio seleccionado: $exercise")},
-                onOpenDetail = { id -> navController.navigate(AppRoutes.DETALLE_EJERCICIO(id)) },
-                onBackClick = { navController.popBackStack() }
+
+                onExerciseSelected = { ejercicio ->
+                    // guardar resultado
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(AppConstants.StateKeys.EJERCICIO_SEL, ejercicio)
+
+                    // volver
+                    navController.popBackStack()
+                },
+
+                onOpenDetail = { id ->
+                    navController.navigate(AppRoutes.DETALLE_EJERCICIO(id))
+                },
+
+                onBackClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.remove<Ejercicio>(AppConstants.StateKeys.EJERCICIO_SEL)
+                    navController.popBackStack()
+                }
             )
         }
+
+        composable(AppRoutes.RUTINA_FORM()) {
+            RutinaFormScreen(
+                viewModel = viewModel(
+                    factory = GenericViewModelFactory(
+                        RutinaFormViewModel::class.java,
+                        FactoryProvider.repositoryFactory(registry)
+                            .create(MaestroRutina::class.java),
+                    ) { param -> RutinaFormViewModel(repo = param) }
+                ),
+                navController = navController
+            )
+        }
+
+
 
         AppRoutes.DETALLE_EJERCICIO.composable(this) { params ->
             // lo dejamos nuleable porque la pantalla maneja el caso null internamente.

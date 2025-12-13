@@ -2,6 +2,7 @@ package cl.duocuc.gymcel.data.repository
 
 
 import cl.duocuc.gymcel.data.local.dao.GymcelDao
+import cl.duocuc.gymcel.domain.data.Repository
 import cl.duocuc.gymcel.domain.data.RepositoryFactory
 
 class RepositoryFactoryMappedImpl (
@@ -9,7 +10,7 @@ class RepositoryFactoryMappedImpl (
 ) : RepositoryFactory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T, DAO : GymcelDao<T>> create(entityClass: Class<T>): GymcelRepository<T, DAO> {
+    override fun <T, DAO : GymcelDao<T>> create(entityClass: Class<T>): Repository<T, Long> {
         val dao = registry[entityClass]?.invoke()
             ?: IllegalArgumentException("No DAO registrado para ${entityClass.simpleName}")
 

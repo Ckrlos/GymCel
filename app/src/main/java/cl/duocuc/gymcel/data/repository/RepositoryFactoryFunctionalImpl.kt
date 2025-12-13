@@ -1,6 +1,7 @@
 package cl.duocuc.gymcel.data.repository
 
 import cl.duocuc.gymcel.data.local.dao.GymcelDao
+import cl.duocuc.gymcel.domain.data.Repository
 import cl.duocuc.gymcel.domain.data.RepositoryFactory
 
 class RepositoryFactoryFunctionalImpl(
@@ -8,7 +9,7 @@ class RepositoryFactoryFunctionalImpl(
 ) : RepositoryFactory {
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T, DAO : GymcelDao<T>> create(entityClass: Class<T>): GymcelRepository<T, DAO> {
+    override fun <T, DAO : GymcelDao<T>> create(entityClass: Class<T>): Repository<T, Long> {
         val dao = daoMapper(entityClass)
             ?: throw IllegalArgumentException("No DAO for ${entityClass.simpleName}")
 

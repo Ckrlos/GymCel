@@ -4,6 +4,9 @@ package cl.duocuc.gymcel.presentacion.viewmodel
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cl.duocuc.gymcel.domain.data.Repository
+import cl.duocuc.gymcel.data.local.entities.relations.MaestroRutina
+import cl.duocuc.gymcel.data.mapper.toMasterEntity
 import cl.duocuc.gymcel.domain.model.DetalleRutina
 import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.Rutina
@@ -40,17 +43,13 @@ data class RutinaFormUiState(
 )
 
 class RutinaFormViewModel(
-    // TODO: inyectar aquí tu Repository / UseCase de Rutina
-    // private val rutinaRepository: RutinaRepository
+    private val repo: Repository<MaestroRutina, Long>
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(RutinaFormUiState())
     val uiState: StateFlow<RutinaFormUiState> = _uiState.asStateFlow()
 
     // ID local para diferenciar items en la UI (no es el ID de BD)
     private var detalleAutoId: Long = 0L
-
-    // --- HEADER ---
 
     fun onNombreChange(nombre: String) {
         _uiState.update { state ->
@@ -82,10 +81,7 @@ class RutinaFormViewModel(
         }
     }
 
-    /**
-     * Llamar a esto cuando el usuario haya seleccionado un ejercicio
-     * desde la pantalla de búsqueda.
-     */
+
     fun addDetalleForExercise(ejercicio: Ejercicio) {
         val localId = ++detalleAutoId
         val current = _uiState.value
@@ -116,7 +112,7 @@ class RutinaFormViewModel(
         }
     }
 
-    fun removeDetalle(localId: Long) {
+    fun onRemoveDetalle(localId: Long) {
         _uiState.update { state ->
             val filtered = state.detalles
                 .filterNot { it.localId == localId }
@@ -145,7 +141,31 @@ class RutinaFormViewModel(
         }
     }
 
-    // --- GUARDAR ---
+    /*
+    fun onDetalleReorder(fromIndex: Int, toIndex: Int) {
+        _uiState.update { state ->
+            val mutableList = state.detalles.toMutableList()
+            val item = mutableList.removeAt(fromIndex)
+            mutableList.add(toIndex, item)
+
+            // Re-ordenar los detalles
+            val reorderedList = mutableList.mapIndexed { index, rutinaDetalleItemUi ->
+                rutinaDetalleItemUi.copy(
+                    detalle = rutinaDetalleItemUi.detalle.copy(orden = index + 1)
+                )
+            }
+
+            state.copy(
+                detalles = reorderedList,
+                canSave = validateCanSave(state.header, reorderedList)
+            )
+        }
+    }
+     */
+
+
+
+
 
     fun onGuardarClick() {
         val state = _uiState.value
@@ -157,10 +177,8 @@ class RutinaFormViewModel(
             _uiState.update { it.copy(isSaving = true, errorMessage = null) }
 
             try {
-                // TODO: aquí llamas a tu capa de dominio/repositorio.
-                // Ejemplo:
-                // val newId = rutinaRepository.insert(rutina)
-                // rutinaRepository.insertDetalles(newId, rutina.detalleRutina ?: emptyList())
+
+                val newId = repo.save(rutina.toMasterEntity())
 
                 // Por ahora simulamos que se guardó OK:
                 _uiState.update {
@@ -182,8 +200,6 @@ class RutinaFormViewModel(
             }
         }
     }
-
-    // --- PRIVATE HELPERS ---
 
     private fun validateCanSave(
         header: RutinaHeaderUi,

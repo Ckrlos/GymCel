@@ -39,7 +39,7 @@ object AppRoutes {
                 ),
                 BottomNavItem(
                     title = "Crear Rutina",
-                    route = BUSCAR_EJERCICIO(), //TODO: cambiar a selector rutina cuando exista...
+                    route = RUTINA_FORM(),
                     icon = Icons.Default.FitnessCenter
                 )
             ).also{ navItems = it }
