@@ -31,7 +31,7 @@ fun ItemRutinaEntity.toDomain(): DetalleRutina {
     }
 
     val tipo = runCatching { TipoSerie.valueOf(variation) }
-        .getOrElse { TipoSerie.STRAIGHT } // fallback seguro
+        .getOrElse { TipoSerie.STRAIGHT }
 
     return DetalleRutina(
         id = id,

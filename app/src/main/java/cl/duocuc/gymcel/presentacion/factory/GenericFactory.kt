@@ -2,7 +2,7 @@ package cl.duocuc.gymcel.presentacion.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import cl.duocuc.gymcel.data.api.ExerciseDbApiService
+import cl.duocuc.gymcel.data.api.exercise.ExerciseDbApiService
 import cl.duocuc.gymcel.data.local.db.GymDatabase
 
 class GenericViewModelFactory<TParam>(

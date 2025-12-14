@@ -1,4 +1,4 @@
-package cl.duocuc.gymcel.data.api.modelo
+package cl.duocuc.gymcel.data.api.exercise.modelo
 
 import java.net.URL
 

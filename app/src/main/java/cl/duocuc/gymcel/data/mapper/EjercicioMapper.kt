@@ -1,6 +1,6 @@
 package cl.duocuc.gymcel.data.mapper
 
-import cl.duocuc.gymcel.data.api.modelo.Exercise
+import cl.duocuc.gymcel.data.api.exercise.modelo.Exercise
 import cl.duocuc.gymcel.domain.model.DetalleEjercicio
 import cl.duocuc.gymcel.domain.model.Ejercicio
 

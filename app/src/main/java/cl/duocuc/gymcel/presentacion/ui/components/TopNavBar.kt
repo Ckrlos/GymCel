@@ -15,10 +15,10 @@ import androidx.compose.ui.Modifier
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopNavBar(
+    modifier: Modifier = Modifier,
     title: String = "Gymcel",
     showBackButton: Boolean = false,
-    onBackClick: (() -> Unit)? = null,
-    modifier: Modifier = Modifier
+    onBackClick: (() -> Unit)? = null
 ) {
     CenterAlignedTopAppBar(
         title = {

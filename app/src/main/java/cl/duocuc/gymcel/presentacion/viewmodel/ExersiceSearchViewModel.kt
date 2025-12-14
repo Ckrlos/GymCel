@@ -1,11 +1,11 @@
-package cl.duocuc.gymcel.presentacion.ui.ejercicio
+package cl.duocuc.gymcel.presentacion.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.duocuc.gymcel.data.api.ExerciseDbApiService
+import cl.duocuc.gymcel.data.api.exercise.ExerciseDbApiService
 import cl.duocuc.gymcel.data.mapper.toDomain
 import cl.duocuc.gymcel.domain.model.Ejercicio
 import kotlinx.coroutines.Job

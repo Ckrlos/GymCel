@@ -4,9 +4,12 @@ package cl.duocuc.gymcel.presentacion.viewmodel
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cl.duocuc.gymcel.domain.data.Repository
+import cl.duocuc.gymcel.AppConstants
 import cl.duocuc.gymcel.data.local.entities.relations.MaestroRutina
+import cl.duocuc.gymcel.data.mapper.toDomain
 import cl.duocuc.gymcel.data.mapper.toMasterEntity
+import cl.duocuc.gymcel.domain.data.ControlEntidadMaestra
+import cl.duocuc.gymcel.domain.data.GymcelControlEntidadMaestra
 import cl.duocuc.gymcel.domain.model.DetalleRutina
 import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.Rutina
@@ -43,7 +46,7 @@ data class RutinaFormUiState(
 )
 
 class RutinaFormViewModel(
-    private val repo: Repository<MaestroRutina, Long>
+    private val aggStore: GymcelControlEntidadMaestra<MaestroRutina>
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(RutinaFormUiState())
     val uiState: StateFlow<RutinaFormUiState> = _uiState.asStateFlow()
@@ -80,6 +83,32 @@ class RutinaFormViewModel(
             )
         }
     }
+
+    fun addDetalleForExercise(ejercicioId: String) {
+        val api = AppConstants.Api.exerciseDb()
+
+        viewModelScope.launch {
+            try {
+                val response = api.getExerciseById(ejercicioId)
+
+                if (!response.isSuccessful) {
+                    // opcional: manejar error
+                    return@launch
+                }
+
+                val ejercicioDto = response.body()?.data
+                    ?: return@launch
+
+                val ejercicio = ejercicioDto.toDomain()
+
+                addDetalleForExercise(ejercicio)
+
+            } catch (e: Exception) {
+                // opcional: log / error state
+            }
+        }
+    }
+
 
 
     fun addDetalleForExercise(ejercicio: Ejercicio) {
@@ -178,7 +207,7 @@ class RutinaFormViewModel(
 
             try {
 
-                val newId = repo.save(rutina.toMasterEntity())
+                val newId = aggStore.save(rutina.toMasterEntity())
 
                 // Por ahora simulamos que se guardó OK:
                 _uiState.update {

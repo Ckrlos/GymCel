@@ -1,4 +1,4 @@
-package cl.duocuc.gymcel.data.api
+package cl.duocuc.gymcel.data.api.exercise
 
 enum class ExerciseDbSortParameter(val value: String){
     NAME("name"),

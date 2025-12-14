@@ -21,17 +21,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
-import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.presentacion.ui.components.EjercicioListItem
 import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
-import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchEvent
-import cl.duocuc.gymcel.presentacion.ui.ejercicio.ExerciseSearchViewModel
+import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseSearchEvent
+import cl.duocuc.gymcel.presentacion.viewmodel.ExerciseSearchViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExerciseSearchScreen(
     viewModel: ExerciseSearchViewModel,
-    onExerciseSelected: (Ejercicio) -> Unit,
+    onExerciseSelected: (String) -> Unit,
     onOpenDetail: (String) -> Unit,
     onBackClick: (() -> Unit)? = null
 ) {
@@ -99,7 +99,7 @@ fun ExerciseSearchScreen(
                     Column {
                         EjercicioListItem(
                             ejercicio = ejercicio,
-                            onItemClick = { onExerciseSelected(ejercicio) },
+                            onItemClick = { onExerciseSelected(ejercicio.id) },
                             onIconClick = { onOpenDetail(ejercicio.id) }
                         )
 

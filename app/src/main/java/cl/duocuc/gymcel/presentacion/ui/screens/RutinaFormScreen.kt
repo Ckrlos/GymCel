@@ -2,6 +2,7 @@ package cl.duocuc.gymcel.presentacion.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -38,11 +39,11 @@ fun RutinaFormScreen(
         ?.savedStateHandle
 
     val ejercicioSeleccionado =
-        savedStateHandle?.get<Ejercicio>(AppConstants.StateKeys.EJERCICIO_SEL)
+        savedStateHandle?.get<String>(AppConstants.StateKeys.EJERCICIO_SEL)
 
     if (ejercicioSeleccionado != null) {
         viewModel.addDetalleForExercise(ejercicioSeleccionado)
-        savedStateHandle.remove<Ejercicio>(AppConstants.StateKeys.EJERCICIO_SEL)
+        savedStateHandle.remove<String>(AppConstants.StateKeys.EJERCICIO_SEL)
     }
 
     RutinaForm(
@@ -82,9 +83,20 @@ fun RutinaForm(
 
     Scaffold(
         modifier = modifier,
+        floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddDetalleClick) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar ejercicio a la rutina")
+            FloatingActionButton(
+                onClick = onAddDetalleClick,
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.size(64.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Agregar ejercicio a la rutina",
+                    modifier = Modifier.size(32.dp)
+                )
             }
         }
     ) { paddingValues ->
