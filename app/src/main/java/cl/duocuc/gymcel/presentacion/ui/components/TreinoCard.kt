@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cl.duocuc.gymcel.presentacion.viewmodel.WorkoutLogViewModel.TreinoLogUI
+import cl.duocuc.gymcel.domain.model.TreinoLogUI
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 

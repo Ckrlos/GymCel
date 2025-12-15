@@ -161,7 +161,7 @@ fun AppNavGraph(navController: NavHostController, context: Context) {
                     factory = DatabaseViewModelFactory(
                         DetalleTreinoViewModel::class.java,
                         db
-                    ) { db -> DetalleTreinoViewModel(db) }
+                    ) { db -> DetalleTreinoViewModel(db,exerciseDbApi) }
                 )
             )
         }

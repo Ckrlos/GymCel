@@ -23,8 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import cl.duocuc.gymcel.domain.model.SerieUI
 import cl.duocuc.gymcel.domain.model.UnidadPeso
-import cl.duocuc.gymcel.presentacion.viewmodel.SerieUI
+
 
 
 @Composable

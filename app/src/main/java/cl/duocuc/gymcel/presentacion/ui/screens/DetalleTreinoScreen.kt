@@ -31,6 +31,7 @@ fun DetalleTreinoScreen(
     val popupData by viewModel.popupUltimoTreino.collectAsState()
     val popupEjercicio by viewModel.popupEjercicio.collectAsState()
     val detallesRutina = viewModel.detallesRutina.collectAsState()
+    val nombres by viewModel.nombresEjercicios.collectAsState()
 
     LaunchedEffect(treinoId) { viewModel.cargarTreino(treinoId) }
 
@@ -58,7 +59,7 @@ fun DetalleTreinoScreen(
         // --- POPUP ULTIMO TREINO ---
         if (popupData != null && popupEjercicio != null) {
             UltimoTreinoDialog(
-                ejercicio = popupEjercicio!!,
+                ejercicio = nombres[popupEjercicio!!] ?: popupEjercicio!!,
                 series = popupData!!,
                 onDismiss = { viewModel.cerrarPopupUltimoTreino() }
             )
@@ -77,8 +78,11 @@ fun DetalleTreinoScreen(
                 ) {
                     items(seriesUI.entries.toList()) { (detalleId, series) ->
                         val detalle = detallesRutina.value.find { it.id == detalleId } ?: return@items
+                        LaunchedEffect(detalle.exercise_externalid) {
+                            viewModel.cargarNombreEjercicio(detalle.exercise_externalid)
+                        }
                         ExerciseCard(
-                            exerciseName = detalle.exercise_externalid,
+                            exerciseName = nombres[detalle.exercise_externalid] ?: detalle.exercise_externalid,
                             series = series,
                             detalleId = detalleId,
                             editable = editable,
