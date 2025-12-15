@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
+import cl.duocuc.gymcel.data.mapper.toDomain
 import cl.duocuc.gymcel.domain.data.RepositoryFactory
 import cl.duocuc.gymcel.domain.model.Rutina
 import cl.duocuc.gymcel.domain.model.TreinoLogUI
@@ -39,8 +40,6 @@ class WorkoutLogViewModel(
     init {
         cargarDatos()
     }
-
-    // cl.duocuc.gymcel.presentacion.viewmodel.WorkoutLogViewModel (MODIFICADO)
 
     private fun cargarDatos() {
         viewModelScope.launch {
@@ -89,7 +88,7 @@ class WorkoutLogViewModel(
             val items = itemTreinoRepo.getAll().filter { it.treino_id == treino.id }
 
             items.forEach { item ->
-                sb.append("${treino.id},${rutina.name},${treino.timestamp},${item.exercise_externalid},${item.effective_reps},${item.effective_load},${item.load_unit}\n")
+                sb.append("${treino.id},${rutina.name},${treino.toDomain().timestamp},${item.exercise_externalid},${item.effective_reps},${item.effective_load},${item.load_unit}\n")
             }
         }
 

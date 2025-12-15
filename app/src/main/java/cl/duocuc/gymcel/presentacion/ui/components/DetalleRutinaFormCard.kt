@@ -7,11 +7,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,27 +31,44 @@ fun DetalleRutinaFormCard(
     initial: DetalleRutina? = null,
     onValueChange: (DetalleRutina) -> Unit
 ) {
-    var series by remember { mutableStateOf(initial?.series ?: 3) }
-    var repsObjetivo by remember { mutableStateOf(initial?.objetivoReps ?: 10) }
+    var seriesText by remember { mutableStateOf((initial?.series ?: 3).toString()) }
+    var repsObjetivoText by remember { mutableStateOf((initial?.objetivoReps ?: 10).toString()) }
 
     var isRange by remember { mutableStateOf(initial?.isRange() ?: false) }
-    var rangoMin by remember { mutableStateOf(initial?.rangoReps?.first ?: 8) }
-    var rangoMax by remember { mutableStateOf(initial?.rangoReps?.last ?: 12) }
+    var rangoMinText by remember { mutableStateOf((initial?.rangoReps?.first ?: 8).toString()) }
+    var rangoMaxText by remember { mutableStateOf((initial?.rangoReps?.last ?: 12).toString()) }
 
     var tipoSerie by remember { mutableStateOf(initial?.tipoSerie ?: TipoSerie.STRAIGHT) }
     var tipoExpand by remember { mutableStateOf(false) }
 
+    val focusSeries = remember { FocusRequester() }
+    val focusRangoMin = remember { FocusRequester() }
+    val focusRangoMax = remember { FocusRequester() }
+    val focusReps = remember { FocusRequester() }
 
-    LaunchedEffect(series, repsObjetivo, isRange, rangoMin, rangoMax, tipoSerie) {
+    LaunchedEffect(
+        seriesText,
+        repsObjetivoText,
+        isRange,
+        rangoMinText,
+        rangoMaxText,
+        tipoSerie
+    ) {
+        val series = seriesText.toIntOrNull() ?: 0
+        val repsObjetivo = repsObjetivoText.toIntOrNull()
+        val rangoMin = rangoMinText.toIntOrNull()
+        val rangoMax = rangoMaxText.toIntOrNull()
+
         val detalle = DetalleRutina(
             id = initial?.id ?: 0,
             ejercicioId = ejercicioId,
             orden = ordenInferido,
             series = series,
             objetivoReps = if (!isRange) repsObjetivo else null,
-            rangoReps = if (isRange) rangoMin..rangoMax else null,
+            rangoReps = if (isRange && rangoMin != null && rangoMax != null) rangoMin..rangoMax else null,
             tipoSerie = tipoSerie
         )
+
         onValueChange(detalle)
     }
 
@@ -58,7 +79,6 @@ fun DetalleRutinaFormCard(
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
-
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -72,11 +92,26 @@ fun DetalleRutinaFormCard(
             Divider()
 
             OutlinedTextField(
-                value = series.toString(),
-                onValueChange = { series = it.toIntOrNull() ?: series },
+                value = seriesText,
+                onValueChange = { input ->
+                    if (input.isEmpty() || input.all { it.isDigit() }) {
+                        seriesText = input
+                    }
+                },
                 label = { Text("Series") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        if (isRange) focusRangoMin.requestFocus()
+                        else focusReps.requestFocus()
+                    }
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusSeries)
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -93,31 +128,64 @@ fun DetalleRutinaFormCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
+
                     OutlinedTextField(
-                        value = rangoMin.toString(),
-                        onValueChange = { rangoMin = it.toIntOrNull() ?: rangoMin },
+                        value = rangoMinText,
+                        onValueChange = { input ->
+                            if (input.isEmpty() || input.all { it.isDigit() }) {
+                                rangoMinText = input
+                            }
+                        },
                         label = { Text("Mínimo") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onNext = { focusRangoMax.requestFocus() }
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRangoMin)
                     )
+
                     OutlinedTextField(
-                        value = rangoMax.toString(),
-                        onValueChange = { rangoMax = it.toIntOrNull() ?: rangoMax },
+                        value = rangoMaxText,
+                        onValueChange = { input ->
+                            if (input.isEmpty() || input.all { it.isDigit() }) {
+                                rangoMaxText = input
+                            }
+                        },
                         label = { Text("Máximo") },
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(onDone = {}),
+                        modifier = Modifier
+                            .weight(1f)
+                            .focusRequester(focusRangoMax)
                     )
                 }
             } else {
                 OutlinedTextField(
-                    value = repsObjetivo.toString(),
-                    onValueChange = { repsObjetivo = it.toIntOrNull() ?: repsObjetivo },
+                    value = repsObjetivoText,
+                    onValueChange = { input ->
+                        if (input.isEmpty() || input.all { it.isDigit() }) {
+                            repsObjetivoText = input
+                        }
+                    },
                     label = { Text("Repeticiones objetivo") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
+                    keyboardActions = KeyboardActions(onDone = {}),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusReps)
                 )
             }
-
 
             ExposedDropdownMenuBox(
                 expanded = tipoExpand,
@@ -126,8 +194,8 @@ fun DetalleRutinaFormCard(
                 OutlinedTextField(
                     value = tipoSerie.desc,
                     onValueChange = {},
-                    label = { Text("Tipo de serie") },
                     readOnly = true,
+                    label = { Text("Tipo de serie") },
                     modifier = Modifier
                         .fillMaxWidth()
                         .menuAnchor()
@@ -151,6 +219,7 @@ fun DetalleRutinaFormCard(
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
