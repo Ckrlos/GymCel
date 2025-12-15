@@ -10,6 +10,10 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -21,13 +25,17 @@ import cl.duocuc.gymcel.AppRoutes
 import cl.duocuc.gymcel.domain.model.DetalleRutina
 import cl.duocuc.gymcel.domain.model.Ejercicio
 import cl.duocuc.gymcel.domain.model.TipoSerie
+import cl.duocuc.gymcel.presentacion.ui.components.BottomNavBar
 import cl.duocuc.gymcel.presentacion.ui.components.DetalleRutinaFormCard
+import cl.duocuc.gymcel.presentacion.ui.components.TopNavBar
 import cl.duocuc.gymcel.presentacion.ui.components.UnderlineTextField
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaDetalleItemUi
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaFormUiState
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaFormViewModel
 import cl.duocuc.gymcel.presentacion.viewmodel.RutinaHeaderUi
 import java.time.DayOfWeek
+import java.time.format.TextStyle
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -46,20 +54,37 @@ fun RutinaFormScreen(
         savedStateHandle.remove<String>(AppConstants.StateKeys.EJERCICIO_SEL)
     }
 
-    RutinaForm(
-        state = viewModel.uiState.collectAsState().value,
-        onNombreChange = viewModel::onNombreChange,
-        onDescripcionChange = viewModel::onDescripcionChange,
-        onDiaChange = viewModel::onDiaChange,
-        onDetalleChange = viewModel::onDetalleChanged,
-        onRemoveDetalle = viewModel::onRemoveDetalle,
+    Scaffold(
+        topBar = { TopNavBar() },
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+        ) {
 
-        onAddDetalleClick = {
-            navController.navigate(AppRoutes.BUSCAR_EJERCICIO())
-        },
+            RutinaForm(
+                state = viewModel.uiState.collectAsState().value,
+                onNombreChange = viewModel::onNombreChange,
+                onDescripcionChange = viewModel::onDescripcionChange,
+                onDiaChange = viewModel::onDiaChange,
+                onDetalleChange = viewModel::onDetalleChanged,
+                onRemoveDetalle = viewModel::onRemoveDetalle,
 
-        onGuardarClick = viewModel::onGuardarClick
-    )
+                onAddDetalleClick = {
+                    navController.navigate(AppRoutes.BUSCAR_EJERCICIO())
+                },
+
+                onGuardarClick = {
+                    viewModel.onGuardarClick()
+                    navController.popBackStack()
+                }
+            )
+
+        }
+    }
+
 }
 
 
@@ -130,19 +155,27 @@ fun RutinaForm(
                 maxLines = 3
             )
 
+            var expandedDia by remember { mutableStateOf(false) }
 
-            var expandedDia = androidx.compose.runtime.remember { false }
+            val localeEs = remember { Locale("es", "ES") }
+
+            val diaSeleccionadoLabel = state.header.dia
+                ?.getDisplayName(TextStyle.FULL, localeEs)
+                ?.replaceFirstChar { it.uppercase(localeEs) }
+                ?: "Cualquiera"
 
             ExposedDropdownMenuBox(
                 expanded = expandedDia,
                 onExpandedChange = { expandedDia = !expandedDia }
             ) {
                 OutlinedTextField(
-                    value = state.header.dia?.name ?: "",
+                    value = diaSeleccionadoLabel,
                     onValueChange = {},
                     readOnly = true,
                     label = { Text("Día (opcional)") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDia) },
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedDia)
+                    },
                     modifier = Modifier
                         .menuAnchor()
                         .fillMaxWidth()
@@ -152,17 +185,8 @@ fun RutinaForm(
                     expanded = expandedDia,
                     onDismissRequest = { expandedDia = false }
                 ) {
-                    DayOfWeek.entries.forEach { dia ->
-                        DropdownMenuItem(
-                            text = { Text(dia.name) },
-                            onClick = {
-                                onDiaChange(dia)
-                                expandedDia = false
-                            }
-                        )
-                    }
 
-
+                    // Opción por defecto
                     DropdownMenuItem(
                         text = { Text("Cualquiera") },
                         onClick = {
@@ -170,8 +194,27 @@ fun RutinaForm(
                             expandedDia = false
                         }
                     )
+
+                    Divider()
+
+                    DayOfWeek.entries.forEach { dia ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    dia.getDisplayName(TextStyle.FULL, localeEs)
+                                        .replaceFirstChar { it.uppercase(localeEs) }
+                                )
+                            },
+                            onClick = {
+                                onDiaChange(dia)
+                                expandedDia = false
+                            }
+                        )
+                    }
                 }
             }
+
+
 
             Divider()
 
