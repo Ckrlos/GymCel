@@ -5,7 +5,11 @@ import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import cl.duocuc.gymcel.core.navigation.route;
+import cl.duocuc.gymcel.domain.usecase.useApi
 import cl.duocuc.gymcel.presentacion.ui.components.BottomNavItem
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 object AppRoutes {
 
@@ -45,6 +49,19 @@ object AppRoutes {
             ).also{ navItems = it }
         }
     }
+
+    fun getTopNavbarActions(
+        scope: CoroutineScope
+    ): Map<String, () -> Unit> {
+        return mapOf(
+            "API TEST" to {
+                scope.launch {
+                    useApi(AppConstants.Api.jsonPlaceholder())
+                }
+            }
+        )
+    }
+
 
 
     val DETALLE_TREINO = route {
