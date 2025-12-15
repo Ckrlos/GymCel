@@ -53,7 +53,6 @@ dependencies {
     // --- Jetpack Compose BOM ---
     implementation(platform("androidx.compose:compose-bom:2025.01.00"))
     implementation(libs.androidx.runtime)
-    androidTestImplementation("androidx.arch.core:core-testing:2.2.0")
     implementation("androidx.compose.ui:ui-text")
 
     implementation("io.coil-kt:coil-compose:2.6.0")
@@ -63,6 +62,8 @@ dependencies {
 
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.navigation.testing)
     debugImplementation("androidx.compose.ui:ui-tooling")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-extended")
@@ -83,9 +84,28 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.google.code.gson:gson:2.10.1")
-
     // --- Tests ---
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+
+// Android Tests
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.0")
+
+// Compose BOM para tests (OBLIGATORIO)
+    androidTestImplementation(platform("androidx.compose:compose-bom:2025.01.00"))
+
+// Compose UI Tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+// Coroutines Test
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+// Room testing
+    androidTestImplementation("androidx.room:room-testing:2.6.1")
+
+// Mockito
+    androidTestImplementation("org.mockito:mockito-android:5.5.0")
+
+
 }
