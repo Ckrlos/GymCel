@@ -6,6 +6,7 @@ import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
 import cl.duocuc.gymcel.domain.data.RepositoryFactory
 import cl.duocuc.gymcel.domain.model.Rutina
+import cl.duocuc.gymcel.domain.model.TreinoLogUI
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -62,11 +63,5 @@ class WorkoutLogViewModel(
         }
     }
 
-    data class TreinoLogUI(
-        val treinoId: Long,
-        val rutinaNombre: String,
-        val fecha: LocalDate,
-        val diaSemana: DayOfWeek?,
-        val isDone: Boolean
-    )
+
 }

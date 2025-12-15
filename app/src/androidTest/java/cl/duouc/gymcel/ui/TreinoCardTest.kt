@@ -4,8 +4,9 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import cl.duocuc.gymcel.domain.model.TreinoLogUI
 import cl.duocuc.gymcel.presentacion.ui.components.TreinoCard
-import cl.duocuc.gymcel.presentacion.viewmodel.WorkoutLogViewModel.TreinoLogUI
+
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

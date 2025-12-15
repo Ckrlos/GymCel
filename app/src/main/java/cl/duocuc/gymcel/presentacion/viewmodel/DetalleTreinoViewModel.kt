@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cl.duocuc.gymcel.data.FactoryProvider
+import cl.duocuc.gymcel.data.api.exercise.ExerciseDbApiService
 import cl.duocuc.gymcel.data.local.dao.ItemTreinoDao
 import cl.duocuc.gymcel.data.local.db.GymDatabase
 import cl.duocuc.gymcel.data.local.entities.ItemRutinaEntity
 import cl.duocuc.gymcel.data.local.entities.ItemTreinoEntity
 import cl.duocuc.gymcel.data.local.entities.RutinaEntity
 import cl.duocuc.gymcel.data.local.entities.TreinoEntity
+import cl.duocuc.gymcel.data.mapper.toDomain
 import cl.duocuc.gymcel.domain.data.RepositoryFactory
 import cl.duocuc.gymcel.domain.model.*
 import kotlinx.coroutines.flow.*
@@ -19,9 +21,10 @@ import java.time.DayOfWeek
 import java.time.Instant
 
 class DetalleTreinoViewModel(
-    db :GymDatabase
+    db :GymDatabase,
+    private val api: ExerciseDbApiService
 ) : ViewModel() {
-
+    private val _uiState = MutableStateFlow<ExerciseDetailUiState>(ExerciseDetailUiState.Loading)
     private val registry by lazy {
         FactoryProvider.registry(db)
     }
@@ -72,6 +75,8 @@ class DetalleTreinoViewModel(
     private var treinoIdActual: Long? = null
     private val _detallesRutina = MutableStateFlow<List<ItemRutinaEntity>>(emptyList())
     val detallesRutina: StateFlow<List<ItemRutinaEntity>> = _detallesRutina.asStateFlow()
+    private val _nombresEjercicios = MutableStateFlow<Map<String, String>>(emptyMap())
+    val nombresEjercicios: StateFlow<Map<String, String>> = _nombresEjercicios.asStateFlow()
 
 
     fun cargarTreino(treinoId: Long) {
@@ -313,25 +318,47 @@ class DetalleTreinoViewModel(
 
         else -> null
     }
+    fun cargarNombreEjercicio(externalId: String) {
+        viewModelScope.launch {
+            if (_nombresEjercicios.value.containsKey(externalId)) return@launch
+
+            val ejercicio = obtenerNombreEjercicio(externalId)
+            if (ejercicio != null) {
+                val copia = _nombresEjercicios.value.toMutableMap()
+                copia[externalId] = ejercicio.nombre
+                _nombresEjercicios.value = copia
+            }
+        }
+    }
+
+    private suspend fun obtenerNombreEjercicio(externalId: String): Ejercicio? {
+        var body: Ejercicio? = null
+        try {
+            val response = api.getExerciseById(externalId)
+
+            if (response.isSuccessful) {
+                 body = response.body()?.data?.toDomain()
+
+                if (body != null) {
+                    _uiState.value = ExerciseDetailUiState.Success(body)
+                    return body
+                } else {
+                    _uiState.value = ExerciseDetailUiState.Error("Respuesta vacía")
+                }
+            } else {
+                _uiState.value = ExerciseDetailUiState.Error(
+                    "Error HTTP: ${response.code()}"
+                )
+            }
+
+        } catch (ex: Exception) {
+            _uiState.value = ExerciseDetailUiState.Error(ex.message ?: "Error desconocido")
+
+        }
+        return body
+    }
 
 }
 
 
-// ---------------- DTO UI CLEAN ----------------
-data class SerieUI(
-    val numero: Int,
-    val carga: Double,
-    val reps: Int,
-    val unidad: UnidadPeso,
-    val meta: String?,
-    val editable: Boolean
-)
 
-
-// ---------------- MAPPERS ----------------
-private fun RutinaEntity.toDomain(): Rutina = Rutina(
-    id = id,
-    nombre = name,
-    descripcion = desc,
-    dia = dia?.let { DayOfWeek.valueOf(it) }
-)
